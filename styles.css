@@ -562,4 +562,50 @@ button {
   flex: 1;
 }
 
+/* Refresh Button Styles */
+.refresh-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10000; /* Обеспечивает, что кнопка всегда поверх остальных элементов */
+  display: none; /* Изначально скрыта */
+  color: #3D3D3D; /* Цвет иконки в светлой теме */
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.refresh-button.show {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hover эффект для кнопки */
+.refresh-button:hover {
+  color: #FE554A; /* Цвет иконки при наведении в светлой теме */
+  transform: scale(1.1);
+}
+
+/* Иконка Font Awesome */
+.refresh-button i {
+  pointer-events: none; /* Иконка не будет реагировать на события мыши */
+}
+
+/* Стилизация для тёмной темы */
+@media (prefers-color-scheme: dark) {
+  .refresh-button {
+    color: #FFFFFF; /* Цвет иконки в тёмной теме */
+  }
+
+  .refresh-button:hover {
+    color: #FE554A; /* Цвет иконки при наведении в тёмной теме */
+  }
+}
 

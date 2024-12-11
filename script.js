@@ -468,3 +468,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
   renderMealHistory();
 });
+
+// script.js
+
+document.addEventListener("DOMContentLoaded", function () {
+  let touchStartY = 0;
+  let touchEndY = 0;
+  const swipeThreshold = 50; // Минимальное расстояние для распознавания свайпа вниз (в пикселях)
+  let refreshButtonVisible = false;
+  let hideButtonTimeout = null;
+
+  // Создаем кнопку обновления
+  const refreshButton = document.createElement('button');
+  refreshButton.classList.add('refresh-button');
+  refreshButton.innerHTML = '<i class="fas fa-sync-alt"></i>'; // Иконка обновления из Font Awesome
+  document.body.appendChild(refreshButton);
+
+  // Функция для отображения кнопки обновления
+  function showRefreshButton() {
+    if (refreshButtonVisible) return; // Если кнопка уже видна, ничего не делаем
+
+    refreshButton.classList.add('show');
+    refreshButtonVisible = true;
+
+    // Устанавливаем таймер на скрытие кнопки через 3 секунды
+    hideButtonTimeout = setTimeout(() => {
+      hideRefreshButton();
+    }, 3000);
+  }
+
+  // Функция для скрытия кнопки обновления
+  function hideRefreshButton() {
+    refreshButton.classList.remove('show');
+    refreshButtonVisible = false;
+    if (hideButtonTimeout) {
+      clearTimeout(hideButtonTimeout);
+      hideButtonTimeout = null;
+    }
+  }
+
+  // Обработчик клика на кнопку обновления
+  refreshButton.addEventListener('click', function () {
+    location.reload(); // Перезагружаем страницу
+  });
+
+  // Обработчики касаний для обнаружения свайпа вниз
+  document.addEventListener('touchstart', function (e) {
+    // Игнорируем свайпы внутри элемента с классом "history"
+    if (e.target.closest('.history')) return;
+
+    if (e.touches.length > 1) return; // Игнорируем многократные касания
+
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function (e) {
+    // Игнорируем свайпы внутри элемента с классом "history"
+    if (e.target.closest('.history')) return;
+
+    touchEndY = e.changedTouches[0].clientY;
+    handleGesture();
+  }, { passive: true });
+
+  function handleGesture() {
+    if (touchEndY - touchStartY > swipeThreshold) {
+      showRefreshButton();
+    }
+  }
+
+  // Предотвращаем появление кнопки, если она уже видна
+  refreshButton.addEventListener('transitionend', function () {
+    if (!refreshButton.classList.contains('show')) {
+      refreshButton.style.display = 'none';
+    }
+  });
+});
