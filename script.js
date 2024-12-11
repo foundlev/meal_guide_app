@@ -68,7 +68,9 @@ function getMealRecords(){
     return records;
 }
 
+
 // script.js
+
 document.addEventListener("DOMContentLoaded", function () {
   const addButton = document.getElementById("add-meal-button");
   const textarea = document.querySelector(".add-form textarea");
@@ -107,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("cancel-button").addEventListener("click", closeModal);
 
     document.getElementById("confirm-button").addEventListener("click", function() {
-      // Запрос к API
+      // Показываем загрузку
       showModal(
         `<div class="modal-loading">
           <div class="modal-loading-spinner"></div>
@@ -236,7 +238,6 @@ document.addEventListener("DOMContentLoaded", function () {
       dayHeader.textContent = headerText;
       daySection.appendChild(dayHeader);
 
-      // Сортируем по убыванию времени
       grouped[dateStr].sort((a, b) => b.timestamp - a.timestamp);
 
       grouped[dateStr].forEach(record => {
@@ -298,7 +299,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const record = records.find(r => r.timestamp === timestamp);
         if (!record) return;
 
-        // Формируем модалку с деталями
         let recordType = record.type || "meal";
         let title = recordType === "sport" ? "Информация о тренировке" : "Информация о приёме пищи";
 
@@ -319,17 +319,29 @@ document.addEventListener("DOMContentLoaded", function () {
         showModal(
           detailsHTML,
           `<button class="modal-button cancel" id="cancel-detail">Отмена</button>
-           <button class="modal-button" id="delete-detail">Удалить</button>`
+           <button class="modal-button" id="delete-detail">Удалить</button>
+           <button class="modal-button" id="duplicate-detail">Дублировать</button>`
         );
 
         document.getElementById("cancel-detail").addEventListener("click", closeModal);
 
         document.getElementById("delete-detail").addEventListener("click", () => {
-          // Удаляем запись
           const updatedRecords = records.filter(r => r.timestamp !== timestamp);
           localStorage.setItem("mealRecords", JSON.stringify(updatedRecords));
           closeModal();
-          location.reload(); // перезагрузим страницу
+          location.reload();
+        });
+
+        // Добавляем обработчик для дублирования
+        document.getElementById("duplicate-detail").addEventListener("click", () => {
+          const duplicatedRecord = {
+            ...record,
+            timestamp: Math.floor(Date.now() / 1000) // Новый timestamp
+          };
+          const updatedRecords = [...records, duplicatedRecord];
+          localStorage.setItem("mealRecords", JSON.stringify(updatedRecords));
+          closeModal();
+          location.reload();
         });
       });
     });
@@ -337,5 +349,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   renderMealHistory();
 });
+
 
 
