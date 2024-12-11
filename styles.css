@@ -1,3 +1,15 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Отключаем прокрутку */
+  touch-action: manipulation; /* Улучшает поведение касаний */
+  -ms-touch-action: manipulation; /* Для IE */
+  -webkit-user-select: none; /* Отключаем выделение текста */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
   body {
     margin: 0;
@@ -5,6 +17,21 @@
     font-family: 'DM Sans', 'Sk-Modernist', sans-serif;
     color: #3D3D3D;
   }
+
+  body, .modal-content, .buttons-row, .add-form, .history, .recommendations-section {
+  -webkit-touch-callout: none; /* Отключаем всплывающее меню при долгом нажатии */
+  -webkit-user-select: none; /* Отключаем выделение текста */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Улучшение взаимодействия с кнопками на мобильных устройствах */
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
 
   header {
     display: flex;

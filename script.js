@@ -10,6 +10,20 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Отключаем зумирование жестами
+document.addEventListener('gesturestart', function (e) {
+  e.preventDefault();
+});
+
+document.addEventListener('gesturechange', function (e) {
+  e.preventDefault();
+});
+
+document.addEventListener('gestureend', function (e) {
+  e.preventDefault();
+});
+
+
 // Загружаем текст из prompt_1.txt в переменную prompt_1
 let prompt_1 = null;
 fetch('assets/prompt_1.txt')
