@@ -288,7 +288,6 @@
 
 .modal-body {
   font-size: 16px;
-  margin-bottom:20px;
   color:#333;
 }
 
@@ -296,6 +295,7 @@
   display:flex;
   gap:10px;
   justify-content:flex-end;
+  margin-top: 20px;
 }
 
 .modal-button {

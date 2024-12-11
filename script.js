@@ -10,6 +10,17 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Загружаем текст из prompt_1.txt в переменную prompt_1
+let prompt_1 = null;
+fetch('assets/prompt_1.txt')
+ .then(response => response.text())
+ .then(text => {
+    prompt_1 = text;
+  })
+ .catch(error => {
+    console.error('Error fetching prompt_1.txt:', error);
+  });
+
 function getPassword() {
     // Получаем пароль из localStorage
     return localStorage.getItem('mealGuidePassword');
@@ -122,10 +133,9 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>`, ``
       );
 
-      const prompt = "I will send you the name ... (ваш исходный prompt без изменений)";
       const requestData = {
         "password": getPassword(),
-        "prompt": prompt,
+        "prompt": prompt_1,
         "text": mealName
       };
 
