@@ -424,25 +424,19 @@ document.addEventListener("DOMContentLoaded", function () {
     // Если нужно показать поле поиска
     if (searchVisible) {
       // Создаем поле, если его нет
-      if (!searchInput) {
-        searchInput = document.createElement("input");
-        searchInput.type = "text";
-        searchInput.placeholder = "Поиск по названию...";
-        searchInput.style.width = "100%";
-        searchInput.style.marginTop = "10px";
-        searchInput.style.padding = "10px";
-        searchInput.style.border = "1px solid #DDD";
-        searchInput.style.borderRadius = "10px";
-        searchInput.style.fontSize = "16px";
-        searchInput.style.outline = "none";
-        searchInput.style.boxSizing = "border-box";
+    if (!searchInput) {
+      searchInput = document.createElement("input");
+      searchInput.type = "text";
+      searchInput.placeholder = "Поиск по названию...";
+      searchInput.classList.add("search-input"); // Добавляем класс вместо инлайн-стилей
 
-        // Добавляем обработчик ввода
-        searchInput.addEventListener("input", function () {
-          searchQuery = searchInput.value;
-          renderMealHistory(searchQuery);
-        });
-      }
+      // Добавляем обработчик ввода
+      searchInput.addEventListener("input", function () {
+        searchQuery = searchInput.value;
+        renderMealHistory(searchQuery);
+      });
+    }
+
       // Добавляем поле ввода под кнопками
       buttonsRow.insertAdjacentElement("afterend", searchInput);
       searchInput.focus();

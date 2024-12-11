@@ -482,8 +482,42 @@
   }
 }
 
+/* styles.css */
 
-/* Добавьте эти стили в ваш styles.css */
+/* ... ваши существующие стили ... */
+
+/* Стили для поля поиска */
+.search-input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #DDD;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+  background-color: #FFFFFF;
+  color: #3D3D3D;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+/* Стилизация для поля поиска в тёмной теме */
+@media (prefers-color-scheme: dark) {
+  /* ... ваши существующие стили для тёмной темы ... */
+
+  .search-input {
+    background-color: #444444;
+    color: #FFFFFF;
+    border: 1px solid #666666;
+  }
+
+  .search-input::placeholder {
+    color: #CCC;
+  }
+}
 
 .modal-actions-top, .modal-actions-bottom {
   display: flex;
