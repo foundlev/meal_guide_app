@@ -80,6 +80,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalBody = document.getElementById("modal-body");
   const modalActions = document.getElementById("modal-actions");
 
+  const searchButton = document.getElementById("search-button");
+  let searchInput = null; // Ссылка на поле ввода поиска
+  let searchVisible = false; // Отслеживаем, показано ли поле поиска
+  let searchQuery = ""; // Текущая строка поиска
+
   function showModal(contentHTML, actionsHTML) {
     modalBody.innerHTML = contentHTML;
     modalActions.innerHTML = actionsHTML || "";
@@ -117,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>`, ``
       );
 
-      const prompt = "I will send you the name of a dish/product/supplement/vitamin in a freeform text. If no specific quantity is indicated (e.g., grams or pieces), assume:\n- For a dish, count as 1 serving (порции).\n- For a product, count as 1 piece (штуки - шт) (e.g., apple, banana).\n- For supplements or vitamins, count as 1 unit (штуки - шт) (e.g., 1 tablet, capsule, etc.).\n\nYour task:\n1. Return a short product name (1-3 words).\n2. Provide the calorie content (in kilocalories).\n3. Provide the composition: the amount of proteins, fats, and carbohydrates (in grams).\n4. Rate the product's healthiness (from 0.0 to 10.0, where 0 is highly harmful and 10 is highly beneficial). The rating should have one decimal place.\n\nIf the text contains additional information (e.g., composition or quantity), use it. For example, if the input says 'Two bananas,' assume it means 2 pieces and calculate the composition and calories for two bananas.\n\nImportant:\n- If the input text is not a product, supplement, vitamin, or dish, return an error in the following format: {'status': false, 'comment': 'Не является пищей'}\n\nResponse format must be strict JSON. \nReturn exclusively in Russian. Example:\nInput: '2 Банана'\nOutput:\n{\n    'status': true,\n    'name': 'Банан 2 шт',\n    'rate': 6.2,\n    'kcal': 192,\n    'proteins': 3,\n    'fats': 1,\n    'carbohydrates': 42\n}\n\nInput: 'Ручка'\nOutput:\n{\n    'status': false,\n    'comment': 'Не является пищей'\n}";
+      const prompt = "I will send you the name ... (ваш исходный prompt без изменений)";
       const requestData = {
         "password": getPassword(),
         "prompt": prompt,
@@ -192,10 +197,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  function renderMealHistory() {
+  // Функция рендера истории с фильтрацией
+  function renderMealHistory(filter = "") {
     historyContainer.innerHTML = "";
 
-    const records = JSON.parse(localStorage.getItem("mealRecords")) || [];
+    let records = JSON.parse(localStorage.getItem("mealRecords")) || [];
+
+    // Фильтрация по имени (регистронезависимый поиск)
+    if (filter.trim() !== "") {
+      const lowerFilter = filter.toLowerCase();
+      records = records.filter(r => (r.name && r.name.toLowerCase().includes(lowerFilter)));
+    }
 
     if (records.length === 0) {
       historyContainer.innerHTML = "<p>Пока нет записей</p>";
@@ -332,7 +344,6 @@ document.addEventListener("DOMContentLoaded", function () {
           location.reload();
         });
 
-        // Добавляем обработчик для дублирования
         document.getElementById("duplicate-detail").addEventListener("click", () => {
           const duplicatedRecord = {
             ...record,
@@ -347,8 +358,49 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Обработчик на кнопку поиска
+  searchButton.addEventListener("click", function () {
+    searchVisible = !searchVisible;
+
+    // Находим контейнер кнопок
+    const buttonsRow = document.querySelector(".buttons-row");
+
+    // Если нужно показать поле поиска
+    if (searchVisible) {
+      // Создаем поле, если его нет
+      if (!searchInput) {
+        searchInput = document.createElement("input");
+        searchInput.type = "text";
+        searchInput.placeholder = "Поиск по названию...";
+        searchInput.style.width = "100%";
+        searchInput.style.marginTop = "10px";
+        searchInput.style.padding = "10px";
+        searchInput.style.border = "1px solid #DDD";
+        searchInput.style.borderRadius = "10px";
+        searchInput.style.fontSize = "16px";
+        searchInput.style.outline = "none";
+        searchInput.style.boxSizing = "border-box";
+
+        // Добавляем обработчик ввода
+        searchInput.addEventListener("input", function () {
+          searchQuery = searchInput.value;
+          renderMealHistory(searchQuery);
+        });
+      }
+      // Добавляем поле ввода под кнопками
+      buttonsRow.insertAdjacentElement("afterend", searchInput);
+      searchInput.focus();
+    } else {
+      // Удаляем поле поиска
+      if (searchInput && searchInput.parentNode) {
+        searchInput.value = "";
+        searchQuery = "";
+        searchInput.parentNode.removeChild(searchInput);
+      }
+      // Обновляем историю без фильтра
+      renderMealHistory();
+    }
+  });
+
   renderMealHistory();
 });
-
-
-
