@@ -20,6 +20,13 @@ function savePassword(newPassword) {
     localStorage.setItem('mealGuidePassword', newPassword);
 }
 
+function formatToOneDecimalPlace(number) {
+    if (number === undefined) {
+        return number;
+    }
+    return number.toFixed(1); // Возвращаем строку, чтобы сохранить ".0"
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Если пароль не сохранен, то требуем ввести его.
     if (!getPassword()) {
@@ -270,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
           mealDetails.innerHTML = `${kcalValue}${pfcStr}`;
           const mealScore = document.createElement("div");
           mealScore.classList.add("meal-score");
-          mealScore.textContent = record.rate !== null ? record.rate : "—";
+          mealScore.textContent = record.rate !== null ? formatToOneDecimalPlace(record.rate) : "—";
           mealInfo.appendChild(mealName);
           mealInfo.appendChild(mealDetails);
           mealItem.appendChild(mealInfo);
