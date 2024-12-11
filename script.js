@@ -346,12 +346,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         detailsHTML += `</div>`;
 
+        // Внутри функции, которая отображает модальное окно с деталями
         showModal(
           detailsHTML,
-          `<button class="modal-button cancel" id="cancel-detail">Отмена</button>
-           <button class="modal-button" id="save-detail">Сохранить</button>
-           <button class="modal-button" id="delete-detail">Удалить</button>
-           <button class="modal-button" id="duplicate-detail">Дублировать</button>`
+          `
+          <div class="modal-actions-top">
+            <button class="modal-button" id="save-detail">Сохранить</button>
+            <button class="modal-button" id="delete-detail">Удалить</button>
+            <button class="modal-button" id="duplicate-detail">Дублировать</button>
+          </div>
+          <div class="modal-actions-bottom">
+            <button class="modal-button cancel" id="cancel-detail">Отмена</button>
+          </div>
+          `
         );
 
         // Закрытие модалки

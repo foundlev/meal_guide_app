@@ -292,9 +292,7 @@
 }
 
 .modal-actions {
-  display:flex;
   gap:10px;
-  justify-content:flex-end;
   margin-top: 20px;
 }
 
@@ -451,13 +449,56 @@
   margin-bottom: 10px;
   font-size: 16px;
 }
+
+/* Добавьте эти стили в ваш styles.css */
+
 .modal-detail input[type="datetime-local"] {
   width: 100%;
-  padding: 8px;
+  padding: 8px 12px;
   margin-top: 5px;
   border: 1px solid #DDD;
   border-radius: 5px;
   font-size: 16px;
   box-sizing: border-box;
+  background-color: #FFFFFF;
+  color: #3D3D3D;
 }
+
+.modal-detail input[type="datetime-local"]::placeholder {
+  color: #999;
+}
+
+/* Добавьте эти стили внутри существующего медиазапроса для тёмной темы */
+
+@media (prefers-color-scheme: dark) {
+  .modal-detail input[type="datetime-local"] {
+    background-color: #444444;
+    color: #FFFFFF;
+    border: 1px solid #666666;
+  }
+
+  .modal-detail input[type="datetime-local"]::placeholder {
+    color: #CCC;
+  }
+}
+
+
+/* Добавьте эти стили в ваш styles.css */
+
+.modal-actions-top, .modal-actions-bottom {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.modal-actions-top {
+  flex-wrap: wrap; /* Позволяет кнопкам переноситься на новую строку при необходимости */
+}
+
+/* Обеспечиваем, чтобы кнопки занимали равное пространство */
+.modal-actions-top .modal-button {
+  flex: 1;
+}
+
 
