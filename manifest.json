@@ -1,0 +1,15 @@
+{
+  "name": "Мой рацион",
+  "short_name": "Мой рацион",
+  "start_url": "/meal_guide_app/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4169E1",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "100x100",
+      "type": "image/png"
+    }
+  ]
+}
