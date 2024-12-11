@@ -82,6 +82,8 @@ function getMealRecords(){
 
 // script.js
 
+// script.js
+
 document.addEventListener("DOMContentLoaded", function () {
   const addButton = document.getElementById("add-meal-button");
   const textarea = document.querySelector(".add-form textarea");
@@ -175,7 +177,8 @@ document.addEventListener("DOMContentLoaded", function () {
               fats: parsed.fats,
               carbohydrates: parsed.carbohydrates
             },
-            kcal: parsed.kcal
+            kcal: parsed.kcal,
+            type: "meal" // Добавляем тип записи
           };
 
           const existingRecords = JSON.parse(localStorage.getItem("mealRecords")) || [];
@@ -324,10 +327,15 @@ document.addEventListener("DOMContentLoaded", function () {
         let recordType = record.type || "meal";
         let title = recordType === "sport" ? "Информация о тренировке" : "Информация о приёме пищи";
 
+        // Форматируем текущую дату и время для input
+        const dateObj = new Date(record.timestamp * 1000);
+        const localDatetime = dateObj.toISOString().slice(0,16); // Формат YYYY-MM-DDTHH:MM
+
         let detailsHTML = `
           <div class="modal-detail">
             <h3>${title}</h3>
             <div class="detail-line"><b>Название:</b> ${record.name || (recordType==="sport"?"Занятие спортом":"—")}</div>
+            <div class="detail-line"><b>Дата и время:</b> <input type="datetime-local" id="edit-datetime" value="${localDatetime}"></div>
             <div class="detail-line"><b>Ккал:</b> ${record.kcal || "—"}</div>
         `;
 
@@ -341,19 +349,23 @@ document.addEventListener("DOMContentLoaded", function () {
         showModal(
           detailsHTML,
           `<button class="modal-button cancel" id="cancel-detail">Отмена</button>
+           <button class="modal-button" id="save-detail">Сохранить</button>
            <button class="modal-button" id="delete-detail">Удалить</button>
            <button class="modal-button" id="duplicate-detail">Дублировать</button>`
         );
 
+        // Закрытие модалки
         document.getElementById("cancel-detail").addEventListener("click", closeModal);
 
+        // Удаление записи
         document.getElementById("delete-detail").addEventListener("click", () => {
           const updatedRecords = records.filter(r => r.timestamp !== timestamp);
           localStorage.setItem("mealRecords", JSON.stringify(updatedRecords));
           closeModal();
-          location.reload();
+          renderMealHistory();
         });
 
+        // Дублирование записи
         document.getElementById("duplicate-detail").addEventListener("click", () => {
           const duplicatedRecord = {
             ...record,
@@ -362,7 +374,34 @@ document.addEventListener("DOMContentLoaded", function () {
           const updatedRecords = [...records, duplicatedRecord];
           localStorage.setItem("mealRecords", JSON.stringify(updatedRecords));
           closeModal();
-          location.reload();
+          renderMealHistory();
+        });
+
+        // Сохранение измененной даты и времени
+        document.getElementById("save-detail").addEventListener("click", () => {
+          const newDatetimeInput = document.getElementById("edit-datetime").value;
+          if (!newDatetimeInput) {
+            alert("Пожалуйста, укажите дату и время.");
+            return;
+          }
+
+          const newTimestamp = Math.floor(new Date(newDatetimeInput).getTime() / 1000);
+          if (isNaN(newTimestamp)) {
+            alert("Некорректная дата и время.");
+            return;
+          }
+
+          // Проверяем, не пересекается ли новый timestamp с существующими
+          if (records.some(r => r.timestamp === newTimestamp && r !== record)) {
+            alert("Другая запись уже использует эту дату и время. Пожалуйста, выберите другое время.");
+            return;
+          }
+
+          // Обновляем запись
+          record.timestamp = newTimestamp;
+          localStorage.setItem("mealRecords", JSON.stringify(records));
+          closeModal();
+          renderMealHistory();
         });
       });
     });

@@ -451,3 +451,13 @@
   margin-bottom: 10px;
   font-size: 16px;
 }
+.modal-detail input[type="datetime-local"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #DDD;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
