@@ -131,7 +131,15 @@ if ('serviceWorker' in navigator) {
 
         // Форматируем текущую дату и время для input
         const dateObj = new Date(record.timestamp * 1000);
-        const localDatetime = dateObj.toISOString().slice(0,16); // Формат YYYY-MM-DDTHH:MM
+        // Получаем компоненты локальной даты и времени
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const hours = String(dateObj.getHours()).padStart(2, '0');
+        const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+
+        // Формируем строку в формате YYYY-MM-DDTHH:MM
+        const localDatetime = `${year}-${month}-${day}T${hours}:${minutes}`;
 
         let detailsHTML = `
           <div class="modal-detail">
