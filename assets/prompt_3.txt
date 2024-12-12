@@ -1,0 +1,26 @@
+Below are the data about my meals (including foods, drinks, supplements, vitamins) and my workouts over a certain period of time, sorted by day. The data includes the types of meals, their calorie content, as well as the amount of protein, fat, and carbohydrates. For workouts, the burned calories are indicated. Calories and composition of foods were estimated by AI in some cases and may contain inaccuracies. My workout app (as I guess) can sometimes overestimate the number of calories burned. Based on this information, the AI should:
+
+1. Analyze my current eating habits and routine.
+2. Evaluate the positive and negative aspects.
+3. Identify any missing nutrients (microelements, vitamins) and recommend foods that could supply them.
+4. Suggest ways to improve my diet.
+5. Provide a rating of my diet from 0 to 100, where 0 is very poor and 100 is ideal.
+6. Give a 1-2 word assessment of my dietary habits.
+7. Format the result in the following JSON format:
+
+{
+  "short": "<str:short>",
+  "brief": "<str:brief>",
+  "rate": {
+    "number": <int:rate>,
+    "text": "<str:rate>"
+  }
+}
+
+Where:
+- <str:brief>: A short free-text description of my current diet, recent changes, its pros and cons. Mention if there is a lack of certain microelements/vitamins and suggest foods that can improve this.
+- <str:short>: A very short recommendation (just a few words) on what to improve in my diet.
+- <int:rate>: An integer from 0 to 100 rating my diet.
+- <str:rate>: A 1-2 word assessment of my diet.
+
+The answer must be in Russian language only.

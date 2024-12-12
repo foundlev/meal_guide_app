@@ -156,12 +156,14 @@ function formatMinutes(minutes) {
         // Формируем строку в формате YYYY-MM-DDTHH:MM
         const localDatetime = `${year}-${month}-${day}T${hours}:${minutes}`;
 
+        const durationText = record.duration ? '<div class="detail-line"><b>Длительность:</b> ' + formatMinutes(record.duration) + '</div>' : '';
+
         let detailsHTML = `
           <div class="modal-detail">
             <h3>${title}</h3>
             <div class="detail-line"><b>Название:</b> ${record.name || (recordType==="sport"?"Занятие спортом":"—")}</div>
             <div class="detail-line"><b>Дата и время:</b> <input type="datetime-local" id="edit-datetime" value="${localDatetime}"></div>
-            <div class="detail-line"><b>Длительность:</b> ${formatMinutes(record.duration) || "—"}</div>
+            ${durationText}
             <div class="detail-line"><b>Ккал:</b> ${record.kcal || "—"}</div>
         `;
 
@@ -272,6 +274,16 @@ fetch('assets/prompt_2.txt')
   })
  .catch(error => {
     console.error('Error fetching prompt_2.txt:', error);
+  });
+
+let prompt_3 = null;
+fetch('assets/prompt_3.txt')
+ .then(response => response.text())
+ .then(text => {
+    prompt_3 = text;
+  })
+ .catch(error => {
+    console.error('Error fetching prompt_3.txt:', error);
   });
 
 function getPassword() {
@@ -848,7 +860,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>Информация о тренировке</h3>
                 <div class="detail-line"><b>Название:</b> ${workout.name}</div>
                 <div class="detail-line"><b>Дата:</b> ${workout.date}</div>
-                <div class="detail-line"><b>Длительность:</b> ${workout.duration} мин</div>
+                <div class="detail-line"><b>Длительность:</b> ${formatMinutes(workout.duration)}</div>
                 <div class="detail-line"><b>Объем:</b> ${workout.volume}</div>
                 <div class="detail-line"><b>Ккал:</b> ${workout.kcal}</div>
                 <div class="detail-line"><b>Упражнений:</b> ${workout.exercises_count}</div>
