@@ -712,3 +712,159 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
+// Функция парсинга тренировки, аналогичная Python-коду
+function parseWorkout(text) {
+    // Регулярные выражения
+    const workoutInfoPattern = /^(.*?)\n(\d{1,2} \w+ \d{4} at \d{2}:\d{2})\n\s*Duration:\s*(.*?)\n\s*Volume:\s*(.*?)\n\s*Calories:\s*(.*?)\n\s*Exercises:\s*(\d+)/m;
+
+    const workoutInfoMatch = workoutInfoPattern.exec(text);
+    if (!workoutInfoMatch) {
+        throw new Error("Неверный формат тренировки");
+    }
+
+    const name = workoutInfoMatch[1].trim();
+    const dateStr = workoutInfoMatch[2].trim();
+    const durationText = workoutInfoMatch[3].trim();
+    const volume = workoutInfoMatch[4].trim();
+    const caloriesText = workoutInfoMatch[5].trim();
+    const exercisesCount = parseInt(workoutInfoMatch[6], 10);
+
+    // Вычисляем длительность в минутах
+    let durationMinutes = 0;
+    const hoursMatch = /(\d+)h/.exec(durationText);
+    const minutesMatch = /(\d+)m/.exec(durationText);
+    if (hoursMatch) {
+        durationMinutes += parseInt(hoursMatch[1], 10) * 60;
+    }
+    if (minutesMatch) {
+        durationMinutes += parseInt(minutesMatch[1], 10);
+    }
+
+    const kcal = parseInt(caloriesText.split(" ")[0], 10);
+
+    const workout = {
+        name,
+        date: dateStr,
+        duration: durationMinutes,
+        volume,
+        kcal,
+        exercises_count: exercisesCount,
+        exercises: []
+    };
+
+    // Парсим упражнения
+    const exercisesPattern = /(.*?)\n((?:Set \d+: \d+ Reps x [\dBW]+(?: Kg)?\n?)+)/gm;
+    let exerciseMatch;
+    while ((exerciseMatch = exercisesPattern.exec(text)) !== null) {
+        const exerciseName = exerciseMatch[1].trim();
+        const setsText = exerciseMatch[2].trim();
+
+        const setsPattern = /Set (\d+): (\d+) Reps x ([\dBW]+(?: Kg)?)/g;
+        let setMatch;
+        const sets = [];
+        while ((setMatch = setsPattern.exec(setsText)) !== null) {
+            sets.push({
+                set_number: parseInt(setMatch[1], 10),
+                reps: parseInt(setMatch[2], 10),
+                weight: setMatch[3]
+            });
+        }
+
+        workout.exercises.push({
+            name: exerciseName,
+            sets: sets
+        });
+    }
+
+    return workout;
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const addSportButton = document.getElementById("add-sport-button");
+
+    addSportButton.addEventListener("click", async function () {
+        // Читаем из буфера обмена
+        let text = "";
+        try {
+            text = await navigator.clipboard.readText();
+        } catch (e) {
+            showModal(
+                `<p>Не удалось прочитать буфер обмена. Разрешите доступ к буферу или скопируйте текст еще раз.</p>`,
+                `<button class="modal-button" onclick="closeModal()">Ок</button>`
+            );
+            return;
+        }
+
+        if (!text.trim()) {
+            showModal(
+                `<p>Буфер обмена пуст или не содержит текст.</p>`,
+                `<button class="modal-button" onclick="closeModal()">Ок</button>`
+            );
+            return;
+        }
+
+        // Пытаемся распарсить тренировку
+        let workout;
+        try {
+            workout = parseWorkout(text);
+        } catch (err) {
+            showModal(
+                `<p><b>Ошибка:</b> ${err.message}</p>`,
+                `<button class="modal-button" onclick="closeModal()">Ок</button>`
+            );
+            return;
+        }
+
+        // Формируем HTML для отображения тренировки
+        let exercisesHTML = "";
+        for (const ex of workout.exercises) {
+            exercisesHTML += `<div style="margin-bottom:10px;"><b>${ex.name}</b><br>`;
+            for (const s of ex.sets) {
+                exercisesHTML += `Set ${s.set_number}: ${s.reps} Reps x ${s.weight}<br>`;
+            }
+            exercisesHTML += `</div>`;
+        }
+
+        const workoutHTML = `
+            <div class="modal-detail">
+                <h3>Информация о тренировке</h3>
+                <div class="detail-line"><b>Название:</b> ${workout.name}</div>
+                <div class="detail-line"><b>Дата:</b> ${workout.date}</div>
+                <div class="detail-line"><b>Длительность:</b> ${workout.duration} мин</div>
+                <div class="detail-line"><b>Объем:</b> ${workout.volume}</div>
+                <div class="detail-line"><b>Ккал:</b> ${workout.kcal}</div>
+                <div class="detail-line"><b>Упражнений:</b> ${workout.exercises_count}</div>
+                <h3>Упражнения</h3>
+                <div class="exercises-list">
+                    ${exercisesHTML}
+                </div>
+            </div>
+        `;
+
+        showModal(
+            workoutHTML,
+            `
+            <button class="modal-button" id="save-workout-button">Сохранить</button>
+            <button class="modal-button cancel" id="cancel-workout-button">Отмена</button>
+            `
+        );
+
+        document.getElementById("cancel-workout-button").addEventListener("click", closeModal);
+
+        document.getElementById("save-workout-button").addEventListener("click", function() {
+            // Сохраняем только time и type
+            const newRecord = {
+                timestamp: Math.floor(Date.now() / 1000),
+                type: "sport"
+            };
+            const existingRecords = JSON.parse(localStorage.getItem("mealRecords")) || [];
+            existingRecords.push(newRecord);
+            localStorage.setItem("mealRecords", JSON.stringify(existingRecords));
+
+            closeModal();
+            renderMealHistory();
+        });
+    });
+});

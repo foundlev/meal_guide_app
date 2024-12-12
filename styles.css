@@ -291,7 +291,7 @@ button {
     }
   }
 
-  .modal-overlay {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -311,16 +311,30 @@ button {
   max-width:400px;
   width:90%;
   box-shadow:0 2px 10px rgba(0,0,0,0.3);
+  max-height: 50vh; /* максимум 50% от высоты экрана */
+  display: flex;
+  flex-direction: column;
+}
+
+.exercises-list {
+  flex: 1;
+  overflow-y: auto; /* Теперь только exercises-list будет прокручиваться */
+  margin-top: 10px; /* если нужен отступ */
 }
 
 .modal-body {
   font-size: 16px;
   color:#333;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* предотвращаем прокрутку всей modal-body */
+  flex: 1; /* чтобы она занимала все доступное пространство между заголовками и кнопками */
 }
 
 .modal-actions {
   gap:10px;
   margin-top: 20px;
+  flex-shrink: 0; /* Чтобы кнопки не сжимались и оставались на своем месте */
 }
 
 #modal-actions {
@@ -478,17 +492,23 @@ button {
 
 /* Для окна с деталями о приеме */
 .modal-detail {
-  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* чтобы modal-detail занял все оставшееся пространство внутри modal-body */
+  overflow: hidden; /* чтобы скролл был только в exercises-list */
 }
+
 .modal-detail h3 {
   font-size: 20px;
   margin-bottom: 15px;
   font-weight:700;
 }
+
 .modal-detail .detail-line {
   margin-bottom: 10px;
-  font-size: 16px;
+  font-size: 18px;
 }
+
 
 /* Добавьте эти стили в ваш styles.css */
 
