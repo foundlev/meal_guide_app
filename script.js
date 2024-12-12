@@ -26,6 +26,22 @@ function formatMinutes(minutes) {
 }
 
 
+function renderRecommendations() {
+    const recommendationsBox = document.getElementById("recommendations-box");
+    const indicatorPointer = document.getElementById("indicator-pointer");
+    const indicatorStatus = document.getElementById("indicator-status");
+
+    const mealRecShort = localStorage.getItem("mealRecShort") || '...';
+    const mealRecBrief = localStorage.getItem("mealRecBrief") || '...';
+    const mealRecRateNumber = localStorage.getItem("mealRecRateNumber") || 0;
+    const mealRecRateText = localStorage.getItem("mealRecRateText") || '...';
+
+    recommendationsBox.textContent = mealRecShort;
+    indicatorPointer.style.left = `${mealRecRateNumber}%`;
+    indicatorStatus.textContent = mealRecRateText;
+}
+
+
   // Функция рендера истории с фильтрацией
   function renderMealHistory(filter = "") {
     const historyContainer = document.querySelector(".history");
@@ -515,6 +531,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   renderMealHistory();
+  renderRecommendations();
 });
 
 // script.js
@@ -900,3 +917,145 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+         const openAiHelpButton = document.getElementById("open-ai-help");
+
+         openAiHelpButton.addEventListener("click", function () {
+            showModal(
+               `<p>Запросить новые рекомендации у ИИ?</p>`,
+               `<button class="modal-button" id="ai-yes-button">Да</button>
+             <button class="modal-button cancel" id="ai-no-button">Нет</button>`
+            );
+
+            document.getElementById("ai-no-button").addEventListener("click", closeModal);
+
+            document.getElementById("ai-yes-button").addEventListener("click", function () {
+               // Формируем текст отчета
+               const reportText = generateReportForLast60Days();
+               // Показываем загрузку
+               showModal(
+                  `<div class="modal-loading">
+                    <div class="modal-loading-spinner"></div>
+                    <div>Загрузка...</div>
+                </div>`, ``
+               );
+
+               const requestData = {
+                  "password": getPassword(),
+                  "prompt": prompt_3,
+                  "text": reportText
+               };
+
+               fetch('https://myapihelper.na4u.ru/meal_guide/api.php', {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify(requestData)
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                     const content = data.choices[0].message.content
+                        .replace('```json', '')
+                        .replace('```', '');
+                     let fixedContent = content.replace(/'/g, '"');
+
+                     let parsed;
+                     try {
+                        parsed = JSON.parse(fixedContent);
+                     } catch (e) {
+                        showModal(`<p>Ошибка в формате ответа от сервера</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
+                        return;
+                     }
+
+                     if (parsed.status === false) {
+                        showModal(
+                           `<p><b>Ошибка:</b> ${parsed.comment}</p>`,
+                           `<button class="modal-button" onclick="location.reload()">Ок</button>`
+                        );
+                     } else {
+                        // short brief rate.number rate.text
+                        localStorage.setItem("mealRecShort", parsed.short);
+                        localStorage.setItem("mealRecBrief", parsed.brief);
+                        localStorage.setItem("mealRecRateNumber", parsed.rate.number);
+                        localStorage.setItem("mealRecRateText", parsed.rate.text);
+
+                        showModal(
+                           `<div class="modal-success">
+                                <h2>Рекомендации обновлены</h2>
+                            </div>`,
+                           `<button class="modal-button" id="ok-success">Ок</button>`
+                        );
+
+                        renderRecommendations();
+
+                     }
+
+                  });
+            });
+         });
+});
+
+function generateReportForLast60Days() {
+    const allRecords = JSON.parse(localStorage.getItem("mealRecords")) || [];
+    const now = new Date();
+    const sixtyDaysAgo = new Date();
+    sixtyDaysAgo.setDate(now.getDate() - 60);
+
+    // Фильтруем записи за последние 60 дней
+    const filteredRecords = allRecords.filter(record => {
+        const recordDate = new Date(record.timestamp * 1000);
+        return recordDate >= sixtyDaysAgo && recordDate <= now;
+    });
+
+    // Группируем записи по дате (dd.mm.yyyy)
+    const grouped = {};
+    filteredRecords.forEach(record => {
+        const dateStr = formatTimestampToDate(record.timestamp);
+        if (!grouped[dateStr]) {
+            grouped[dateStr] = [];
+        }
+        grouped[dateStr].push(record);
+    });
+
+    // Сортируем даты по убыванию
+    const sortedDates = Object.keys(grouped).sort((a, b) => {
+        const [dayA, monthA, yearA] = a.split('.').map(Number);
+        const [dayB, monthB, yearB] = b.split('.').map(Number);
+        const dateA = new Date(yearA, monthA - 1, dayA);
+        const dateB = new Date(yearB, monthB - 1, dayB);
+        return dateB - dateA;
+    });
+
+    // Формируем текст
+    const currentDateStr = formatTimestampToDate(Math.floor(Date.now() / 1000));
+    let report = "Приемы пищи [пп] и тренировки [тр] (за последние 60 дней, в граммах: б - белки, ж - жиры, у - углеводы):\n";
+
+    for (const dateStr of sortedDates) {
+        report += `${dateStr}:\n`;
+        // Сортируем записи по времени в убывающем порядке
+        grouped[dateStr].sort((a, b) => b.timestamp - a.timestamp);
+
+        for (const record of grouped[dateStr]) {
+            if (record.type === "sport") {
+                // Формируем строку для тренировки
+                const durationStr = record.duration ? formatMinutes(record.duration) : "-";
+                // Список упражнений
+                let exercisesList = "";
+                if (record.exercises && record.exercises.length > 0) {
+                    exercisesList = record.exercises.map(e => e.name).join(", ");
+                }
+                report += `[тр] ${record.name || "Занятие спортом"} | ${record.kcal || "-"} ккал | ${durationStr} | упражнения: ${exercisesList}\n`;
+            } else {
+                // Формируем строку для приема пищи
+                const proteins = record.structure?.proteins ?? "-";
+                const fats = record.structure?.fats ?? "-";
+                const carbs = record.structure?.carbohydrates ?? "-";
+                report += `[пп] ${record.name || "Прием пищи"} | ${record.kcal || "-"} ккал | б ${proteins} | ж ${fats} | у ${carbs}\n`;
+            }
+        }
+    }
+
+    return report;
+}
