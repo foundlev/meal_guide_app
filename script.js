@@ -599,6 +599,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener('touchstart', function (e) {
     // Игнорируем свайпы внутри элемента с классом "history"
     if (e.target.closest('.history')) return;
+    if (e.target.closest('.recText')) return;
 
     if (e.touches.length > 1) return; // Игнорируем многократные касания
 
@@ -608,6 +609,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener('touchend', function (e) {
     // Игнорируем свайпы внутри элемента с классом "history"
     if (e.target.closest('.history')) return;
+    if (e.target.closest('.recText')) return;
 
     touchEndY = e.changedTouches[0].clientY;
     handleGesture();
