@@ -836,7 +836,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="detail-line"><b>Объем:</b> ${workout.volume}</div>
                 <div class="detail-line"><b>Ккал:</b> ${workout.kcal}</div>
                 <div class="detail-line"><b>Упражнений:</b> ${workout.exercises_count}</div>
-                <h3>Упражнения</h3>
                 <div class="exercises-list">
                     ${exercisesHTML}
                 </div>
@@ -855,12 +854,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("save-workout-button").addEventListener("click", function() {
             // Сохраняем только time и type
-            const newRecord = {
+            let newRecord = {
                 timestamp: Math.floor(Date.now() / 1000),
                 type: "sport"
             };
+            const mergedRecord = {
+              ...newRecord,
+              ...workout
+            };
+
             const existingRecords = JSON.parse(localStorage.getItem("mealRecords")) || [];
-            existingRecords.push(newRecord);
+            existingRecords.push(mergedRecord);
             localStorage.setItem("mealRecords", JSON.stringify(existingRecords));
 
             closeModal();

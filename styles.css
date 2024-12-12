@@ -333,7 +333,6 @@ button {
 
 .modal-actions {
   gap:10px;
-  margin-top: 20px;
   flex-shrink: 0; /* Чтобы кнопки не сжимались и оставались на своем месте */
 }
 
@@ -496,6 +495,7 @@ button {
   flex-direction: column;
   flex: 1; /* чтобы modal-detail занял все оставшееся пространство внутри modal-body */
   overflow: hidden; /* чтобы скролл был только в exercises-list */
+  margin-bottom: 15px;
 }
 
 .modal-detail h3 {
@@ -508,9 +508,6 @@ button {
   margin-bottom: 10px;
   font-size: 18px;
 }
-
-
-/* Добавьте эти стили в ваш styles.css */
 
 .modal-detail input[type="datetime-local"] {
   width: 100%;
