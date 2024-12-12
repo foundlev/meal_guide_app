@@ -275,6 +275,26 @@ button {
   overflow: scroll;
   max-height: 150px;
   min-height: 20px;
+  cursor: pointer;
+}
+
+.recText {
+    font-size: 18px;
+    overflow-y: auto;
+    padding: 5px;
+    margin-bottom: 15px;
+}
+
+bold {
+    font-weight: bold;
+}
+
+italic {
+    font-style: italic;
+    padding: 2px;
+    border-radius: 3px;
+    background-color: #e3e3e3;
+    color: #2C2C2C;
 }
 
   /* Адаптивность */

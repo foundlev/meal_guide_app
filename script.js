@@ -41,6 +41,24 @@ function renderRecommendations() {
     indicatorStatus.textContent = mealRecRateText;
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const recommendationsBox = document.getElementById("recommendations-box");
+    recommendationsBox.addEventListener("click", function () {
+        const mealRecBrief = localStorage.getItem("mealRecBrief");
+        // Проверяем наличие и содержимое
+        if (!mealRecBrief || mealRecBrief.trim() === '' || mealRecBrief === '...') {
+            showModal(
+                `<p class="recText">Рекомендации отсутствуют.</p>`,
+                `<button class="modal-button" onclick="closeModal()">Закрыть</button>`
+            );
+        } else {
+            showModal(
+                `<div class="recText"><h2>Рекомендации к рациону</h2>${mealRecBrief}</div>`,
+                `<button class="modal-button" onclick="closeModal()">Закрыть</button>`
+            );
+        }
+    });
+});
 
   // Функция рендера истории с фильтрацией
   function renderMealHistory(filter = "") {
@@ -985,7 +1003,7 @@ document.addEventListener("DOMContentLoaded", function () {
                            `<div class="modal-success">
                                 <h2>Рекомендации обновлены</h2>
                             </div>`,
-                           `<button class="modal-button" id="ok-success">Ок</button>`
+                           `<button class="modal-button" onclick="closeModal()">Ок</button>`
                         );
 
                         renderRecommendations();
