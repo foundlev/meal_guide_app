@@ -320,6 +320,7 @@ button {
   flex: 1;
   overflow-y: auto; /* Теперь только exercises-list будет прокручиваться */
   margin-top: 10px; /* если нужен отступ */
+  margin-bottom: 10px; /* если нужен отступ */
 }
 
 .modal-body {
@@ -495,7 +496,6 @@ button {
   flex-direction: column;
   flex: 1; /* чтобы modal-detail занял все оставшееся пространство внутри modal-body */
   overflow: hidden; /* чтобы скролл был только в exercises-list */
-  margin-bottom: 15px;
 }
 
 .modal-detail h3 {

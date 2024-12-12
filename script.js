@@ -10,6 +10,21 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+function formatMinutes(minutes) {
+    // Если minutes не число, возвращаем пустую строку
+    if (typeof minutes !== 'number' || minutes < 0) {
+        return '-';
+    }
+
+    const hours = Math.floor(minutes / 60); // Вычисляем количество часов
+    const remainingMinutes = minutes % 60; // Остаток - это минуты
+    if (hours > 0) {
+        return `${hours} ч ${remainingMinutes} мин`;
+    } else {
+        return `${remainingMinutes} мин`;
+    }
+}
+
 
   // Функция рендера истории с фильтрацией
   function renderMealHistory(filter = "") {
@@ -85,7 +100,7 @@ if ('serviceWorker' in navigator) {
 
         const recordType = record.type || "meal";
         if (recordType === "sport") {
-          mealName.textContent = "Занятие спортом";
+          mealName.textContent = record.name || "Занятие спортом";
           const kcalValue = record.kcal ? `<i class="fa-solid fa-fire"></i> ${record.kcal} ккал` : `<i class="fa-solid fa-fire"></i> — ккал`;
           mealDetails.innerHTML = `${kcalValue}`;
           const mealScore = document.createElement("div");
@@ -146,6 +161,7 @@ if ('serviceWorker' in navigator) {
             <h3>${title}</h3>
             <div class="detail-line"><b>Название:</b> ${record.name || (recordType==="sport"?"Занятие спортом":"—")}</div>
             <div class="detail-line"><b>Дата и время:</b> <input type="datetime-local" id="edit-datetime" value="${localDatetime}"></div>
+            <div class="detail-line"><b>Длительность:</b> ${formatMinutes(record.duration) || "—"}</div>
             <div class="detail-line"><b>Ккал:</b> ${record.kcal || "—"}</div>
         `;
 
