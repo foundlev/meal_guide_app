@@ -10,222 +10,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Отключаем зумирование жестами
-document.addEventListener('gesturestart', function (e) {
-  e.preventDefault();
-});
-
-document.addEventListener('gesturechange', function (e) {
-  e.preventDefault();
-});
-
-document.addEventListener('gestureend', function (e) {
-  e.preventDefault();
-});
-
-
-// Загружаем текст из prompt_1.txt в переменную prompt_1
-let prompt_1 = null;
-fetch('assets/prompt_1.txt')
- .then(response => response.text())
- .then(text => {
-    prompt_1 = text;
-  })
- .catch(error => {
-    console.error('Error fetching prompt_1.txt:', error);
-  });
-
-function getPassword() {
-    // Получаем пароль из localStorage
-    return localStorage.getItem('mealGuidePassword');
-}
-
-function savePassword(newPassword) {
-    // Сохраняем новый пароль в localStorage
-    localStorage.setItem('mealGuidePassword', newPassword);
-}
-
-function formatToOneDecimalPlace(number) {
-    if (number === undefined) {
-        return number;
-    }
-    return number.toFixed(1); // Возвращаем строку, чтобы сохранить ".0"
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Если пароль не сохранен, то требуем ввести его.
-    if (!getPassword()) {
-        // Запрашиваем пароль через окно
-        const passwordInput = prompt('Введите пароль для запрета выключения приложения:', '');
-        if (passwordInput) {
-            // Сохраняем пароль
-            savePassword(passwordInput);
-            // Обновляем страницу
-            location.reload();
-        } else {
-            // Если пароль не введен, то выходим из приложения
-            alert('Пароль не введен!');
-            window.close();
-        }
-    }
-});
-
-function formatTimestampToDate(timestamp_sec) {
-  // Создаём объект Date из timestamp_sec (умножаем на 1000, чтобы перевести секунды в миллисекунды)
-  const date = new Date(timestamp_sec * 1000);
-
-  // Извлекаем день, месяц и год
-  const day = String(date.getDate()).padStart(2, '0'); // Добавляем ведущий ноль, если нужно
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0, поэтому добавляем 1
-  const year = date.getFullYear();
-
-  // Формируем строку в формате dd.mm.yyyy
-  return `${day}.${month}.${year}`;
-}
-
-function getMealRecords(){
-    // Получаем массив записей из localStorage
-    const records = JSON.parse(localStorage.getItem("mealRecords")) || [];
-
-    // Сортируем записи по дате в обратном порядке (новые вверху)
-    records.sort((a, b) => b.timestamp - a.timestamp);
-
-    return records;
-}
-
-
-// script.js
-
-// script.js
-
-document.addEventListener("DOMContentLoaded", function () {
-  const addButton = document.getElementById("add-meal-button");
-  const textarea = document.querySelector(".add-form textarea");
-  const historyContainer = document.querySelector(".history");
-
-  const modalOverlay = document.getElementById("modal-overlay");
-  const modalBody = document.getElementById("modal-body");
-  const modalActions = document.getElementById("modal-actions");
-
-  const searchButton = document.getElementById("search-button");
-  let searchInput = null; // Ссылка на поле ввода поиска
-  let searchVisible = false; // Отслеживаем, показано ли поле поиска
-  let searchQuery = ""; // Текущая строка поиска
-
-  function showModal(contentHTML, actionsHTML) {
-    modalBody.innerHTML = contentHTML;
-    modalActions.innerHTML = actionsHTML || "";
-    modalOverlay.style.display = "flex";
-  }
-
-  function closeModal() {
-    modalOverlay.style.display = "none";
-    modalBody.innerHTML = "";
-    modalActions.innerHTML = "";
-  }
-
-  addButton.addEventListener("click", function () {
-    const mealName = textarea.value.trim();
-
-    if (!mealName) {
-      alert("Введите название еды!");
-      return;
-    }
-
-    showModal(
-      `<p>Вы уверены, что хотите добавить: <b>${mealName}</b>?</p>`,
-      `<button class="modal-button cancel" id="cancel-button">Отмена</button>
-       <button class="modal-button" id="confirm-button">Добавить</button>`
-    );
-
-    document.getElementById("cancel-button").addEventListener("click", closeModal);
-
-    document.getElementById("confirm-button").addEventListener("click", function() {
-      // Показываем загрузку
-      showModal(
-        `<div class="modal-loading">
-          <div class="modal-loading-spinner"></div>
-          <div>Загрузка...</div>
-        </div>`, ``
-      );
-
-      const requestData = {
-        "password": getPassword(),
-        "prompt": prompt_1,
-        "text": mealName
-      };
-
-      fetch('https://myapihelper.na4u.ru/meal_guide/api.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(requestData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        const content = data.choices[0].message.content
-                         .replace('```json', '')
-                         .replace('```', '');
-        let fixedContent = content.replace(/'/g, '"');
-
-        let parsed;
-        try {
-          parsed = JSON.parse(fixedContent);
-        } catch(e) {
-          showModal(`<p>Ошибка в формате ответа от сервера</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
-          return;
-        }
-
-        if(parsed.status === false) {
-          showModal(
-            `<p><b>Ошибка:</b> ${parsed.comment}</p>`,
-            `<button class="modal-button" onclick="location.reload()">Ок</button>`
-          );
-        } else {
-          // Создаём запись
-          const newRecord = {
-            name: parsed.name,
-            timestamp: Math.floor(Date.now() / 1000),
-            rate: parsed.rate,
-            structure: {
-              proteins: parsed.proteins,
-              fats: parsed.fats,
-              carbohydrates: parsed.carbohydrates
-            },
-            kcal: parsed.kcal,
-            type: "meal" // Добавляем тип записи
-          };
-
-          const existingRecords = JSON.parse(localStorage.getItem("mealRecords")) || [];
-          existingRecords.push(newRecord);
-          localStorage.setItem("mealRecords", JSON.stringify(existingRecords));
-          textarea.value = "";
-
-          // Стильный успех
-          showModal(
-            `<div class="modal-success">
-               <h3>Успешно добавлено!</h3>
-               <div class="meal-info-block"><b>${parsed.name}</b></div>
-               <div class="meal-info-block">Ккал: ${parsed.kcal}</div>
-               <div class="meal-info-block">Б: ${parsed.proteins} г | Ж: ${parsed.fats} г | У: ${parsed.carbohydrates} г</div>
-               <div class="meal-info-block">Оценка полезности: ${parsed.rate}</div>
-             </div>`,
-            `<button class="modal-button" id="ok-success">Ок</button>`
-          );
-
-          document.getElementById("ok-success").addEventListener("click", function(){
-            closeModal();
-            renderMealHistory();
-          });
-        }
-      })
-      .catch(err => {
-        showModal(`<p>Ошибка при запросе: ${err.message}</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
-      });
-    });
-  });
 
   // Функция рендера истории с фильтрацией
   function renderMealHistory(filter = "") {
+    const historyContainer = document.querySelector(".history");
     historyContainer.innerHTML = "";
 
     let records = JSON.parse(localStorage.getItem("mealRecords")) || [];
@@ -368,8 +156,6 @@ document.addEventListener("DOMContentLoaded", function () {
             <button class="modal-button" id="save-detail">Сохранить</button>
             <button class="modal-button" id="delete-detail">Удалить</button>
             <button class="modal-button" id="duplicate-detail">Дублировать</button>
-          </div>
-          <div class="modal-actions-bottom">
             <button class="modal-button cancel" id="cancel-detail">Отмена</button>
           </div>
           `
@@ -427,6 +213,232 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   }
+
+
+// Отключаем зумирование жестами
+document.addEventListener('gesturestart', function (e) {
+  e.preventDefault();
+});
+
+document.addEventListener('gesturechange', function (e) {
+  e.preventDefault();
+});
+
+document.addEventListener('gestureend', function (e) {
+  e.preventDefault();
+});
+
+
+// Загружаем текст из prompt_....txt в переменные
+let prompt_1 = null;
+fetch('assets/prompt_1.txt')
+ .then(response => response.text())
+ .then(text => {
+    prompt_1 = text;
+  })
+ .catch(error => {
+    console.error('Error fetching prompt_1.txt:', error);
+  });
+
+let prompt_2 = null;
+fetch('assets/prompt_2.txt')
+ .then(response => response.text())
+ .then(text => {
+    prompt_2 = text;
+  })
+ .catch(error => {
+    console.error('Error fetching prompt_2.txt:', error);
+  });
+
+function getPassword() {
+    // Получаем пароль из localStorage
+    return localStorage.getItem('mealGuidePassword');
+}
+
+function savePassword(newPassword) {
+    // Сохраняем новый пароль в localStorage
+    localStorage.setItem('mealGuidePassword', newPassword);
+}
+
+function formatToOneDecimalPlace(number) {
+    if (number === undefined) {
+        return number;
+    }
+    return number.toFixed(1); // Возвращаем строку, чтобы сохранить ".0"
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Если пароль не сохранен, то требуем ввести его.
+    if (!getPassword()) {
+        // Запрашиваем пароль через окно
+        const passwordInput = prompt('Введите пароль для запрета выключения приложения:', '');
+        if (passwordInput) {
+            // Сохраняем пароль
+            savePassword(passwordInput);
+            // Обновляем страницу
+            location.reload();
+        } else {
+            // Если пароль не введен, то выходим из приложения
+            alert('Пароль не введен!');
+            window.close();
+        }
+    }
+});
+
+function formatTimestampToDate(timestamp_sec) {
+  // Создаём объект Date из timestamp_sec (умножаем на 1000, чтобы перевести секунды в миллисекунды)
+  const date = new Date(timestamp_sec * 1000);
+
+  // Извлекаем день, месяц и год
+  const day = String(date.getDate()).padStart(2, '0'); // Добавляем ведущий ноль, если нужно
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0, поэтому добавляем 1
+  const year = date.getFullYear();
+
+  // Формируем строку в формате dd.mm.yyyy
+  return `${day}.${month}.${year}`;
+}
+
+function getMealRecords(){
+    // Получаем массив записей из localStorage
+    const records = JSON.parse(localStorage.getItem("mealRecords")) || [];
+
+    // Сортируем записи по дате в обратном порядке (новые вверху)
+    records.sort((a, b) => b.timestamp - a.timestamp);
+
+    return records;
+}
+
+const modalOverlay = document.getElementById("modal-overlay");
+const modalBody = document.getElementById("modal-body");
+const modalActions = document.getElementById("modal-actions");
+
+
+function showModal(contentHTML, actionsHTML) {
+    modalBody.innerHTML = contentHTML;
+    modalActions.innerHTML = actionsHTML || "";
+    modalOverlay.style.display = "flex";
+}
+
+function closeModal() {
+    modalOverlay.style.display = "none";
+    modalBody.innerHTML = "";
+    modalActions.innerHTML = "";
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const addButton = document.getElementById("add-meal-button");
+  const textarea = document.querySelector(".add-form textarea");
+  const historyContainer = document.querySelector(".history");
+
+  const modalOverlay = document.getElementById("modal-overlay");
+  const modalBody = document.getElementById("modal-body");
+  const modalActions = document.getElementById("modal-actions");
+
+  const searchButton = document.getElementById("search-button");
+  let searchInput = null; // Ссылка на поле ввода поиска
+  let searchVisible = false; // Отслеживаем, показано ли поле поиска
+  let searchQuery = ""; // Текущая строка поиска
+
+  addButton.addEventListener("click", function () {
+    const mealName = textarea.value.trim();
+
+    if (!mealName) {
+      alert("Введите название еды!");
+      return;
+    }
+
+    showModal(
+      `<p>Вы уверены, что хотите добавить: <b>${mealName}</b>?</p>`,
+      `<button class="modal-button cancel" id="cancel-button">Отмена</button>
+       <button class="modal-button" id="confirm-button">Добавить</button>`
+    );
+
+    document.getElementById("cancel-button").addEventListener("click", closeModal);
+
+    document.getElementById("confirm-button").addEventListener("click", function() {
+      // Показываем загрузку
+      showModal(
+        `<div class="modal-loading">
+          <div class="modal-loading-spinner"></div>
+          <div>Загрузка...</div>
+        </div>`, ``
+      );
+
+      const requestData = {
+        "password": getPassword(),
+        "prompt": prompt_1,
+        "text": mealName
+      };
+
+      fetch('https://myapihelper.na4u.ru/meal_guide/api.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        const content = data.choices[0].message.content
+                         .replace('```json', '')
+                         .replace('```', '');
+        let fixedContent = content.replace(/'/g, '"');
+
+        let parsed;
+        try {
+          parsed = JSON.parse(fixedContent);
+        } catch(e) {
+          showModal(`<p>Ошибка в формате ответа от сервера</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
+          return;
+        }
+
+        if(parsed.status === false) {
+          showModal(
+            `<p><b>Ошибка:</b> ${parsed.comment}</p>`,
+            `<button class="modal-button" onclick="location.reload()">Ок</button>`
+          );
+        } else {
+          // Создаём запись
+          const newRecord = {
+            name: parsed.name,
+            timestamp: Math.floor(Date.now() / 1000),
+            rate: parsed.rate,
+            structure: {
+              proteins: parsed.proteins,
+              fats: parsed.fats,
+              carbohydrates: parsed.carbohydrates
+            },
+            kcal: parsed.kcal,
+            type: "meal" // Добавляем тип записи
+          };
+
+          const existingRecords = JSON.parse(localStorage.getItem("mealRecords")) || [];
+          existingRecords.push(newRecord);
+          localStorage.setItem("mealRecords", JSON.stringify(existingRecords));
+          textarea.value = "";
+
+          // Стильный успех
+          showModal(
+            `<div class="modal-success">
+               <h3>Успешно добавлено!</h3>
+               <div class="meal-info-block"><b>${parsed.name}</b></div>
+               <div class="meal-info-block">Ккал: ${parsed.kcal}</div>
+               <div class="meal-info-block">Б: ${parsed.proteins} г | Ж: ${parsed.fats} г | У: ${parsed.carbohydrates} г</div>
+               <div class="meal-info-block">Оценка полезности: ${parsed.rate}</div>
+             </div>`,
+            `<button class="modal-button" id="ok-success">Ок</button>`
+          );
+
+          document.getElementById("ok-success").addEventListener("click", function(){
+            closeModal();
+            renderMealHistory();
+          });
+        }
+      })
+      .catch(err => {
+        showModal(`<p>Ошибка при запросе: ${err.message}</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
+      });
+    });
+  });
 
   // Обработчик на кнопку поиска
   searchButton.addEventListener("click", function () {
@@ -543,3 +555,152 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const clipButton = document.getElementById("clip-button");
+    const imageInput = document.getElementById("imageInput");
+
+    const modalOverlay = document.getElementById("modal-overlay");
+    const modalBody = document.getElementById("modal-body");
+    const modalActions = document.getElementById("modal-actions");
+
+    // URL и пароль для API (аналоги из вашего кода)
+    const imageApiUrl = "https://myapihelper.na4u.ru/meal_guide/picture_meal_recognize.php";
+    const password = "meal-guide-password-0d29313s2hf";
+
+    function showModal(contentHTML, actionsHTML) {
+        modalBody.innerHTML = contentHTML;
+        modalActions.innerHTML = actionsHTML || "";
+        modalOverlay.style.display = "flex";
+    }
+
+    function closeModal() {
+        modalOverlay.style.display = "none";
+        modalBody.innerHTML = "";
+        modalActions.innerHTML = "";
+    }
+
+    // Обработчик нажатия на кнопку-скрепку
+    clipButton.addEventListener("click", function() {
+        // Программно нажимаем на скрытый input
+        imageInput.click();
+    });
+
+    imageInput.addEventListener('change', function() {
+        const file = imageInput.files[0];
+        if (!file) return;
+
+        // Спрашиваем подтверждение перед отправкой, например
+        showModal(
+          `<p>Отправить выбранное изображение для анализа?</p>`,
+          `<button class="modal-button" id="confirm-image-button">Отправить</button>
+           <button class="modal-button cancel" id="cancel-image-button">Отмена</button>`
+        );
+
+        document.getElementById("cancel-image-button").addEventListener("click", function() {
+            closeModal();
+            imageInput.value = ""; // Сброс выбора
+        });
+
+        document.getElementById("confirm-image-button").addEventListener("click", function() {
+            // Показываем экран загрузки
+            showModal(
+              `<div class="modal-loading">
+                <div class="modal-loading-spinner"></div>
+                <div>Загрузка...</div>
+              </div>`, ``
+            );
+
+            // Читаем файл в base64
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Image = e.target.result.split(',')[1];
+
+                // Формируем payload для запроса
+                const requestData = {
+                    "password": password,
+                    "prompt": prompt_2,
+                    "image": base64Image
+                };
+
+                fetch(imageApiUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const content = data.choices[0].message.content
+                         .replace('```json', '')
+                         .replace('```', '');
+                    let fixedContent = content.replace(/'/g, '"');
+
+                    let parsed;
+                    try {
+                      parsed = JSON.parse(fixedContent);
+                    } catch(e) {
+                      showModal(`<p>Ошибка в формате ответа от сервера</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
+                      return;
+                    }
+
+                    if (parsed.status === false) {
+                        // Значит не является пищей
+                        showModal(
+                            `<p><b>Ошибка:</b> ${parsed.comment}</p>`,
+                            `<button class="modal-button" onclick="location.reload()">Ок</button>`
+                        );
+                        return;
+                    }
+
+                    // Если всё нормально
+                    console.log(parsed);
+
+                    // Создаём новую запись
+                    const newRecord = {
+                        name: parsed.name,
+                        timestamp: Math.floor(Date.now() / 1000),
+                        rate: parsed.rate,
+                        structure: {
+                          proteins: parsed.proteins,
+                          fats: parsed.fats,
+                          carbohydrates: parsed.carbohydrates
+                        },
+                        kcal: parsed.kcal,
+                        type: "meal" // Добавляем тип записи
+                    };
+
+                    const existingRecords = JSON.parse(localStorage.getItem("mealRecords")) || [];
+                    existingRecords.push(newRecord);
+                    localStorage.setItem("mealRecords", JSON.stringify(existingRecords));
+
+                    // Очищаем input
+                    imageInput.value = "";
+
+                    // Показываем успех
+                    showModal(
+                      `<div class="modal-success">
+                         <h3>Успешно добавлено!</h3>
+                         <div class="meal-info-block"><b>${parsed.name}</b></div>
+                         <div class="meal-info-block">Ккал: ${parsed.kcal}</div>
+                         <div class="meal-info-block">Б: ${parsed.proteins} г | Ж: ${parsed.fats} г | У: ${parsed.carbohydrates} г</div>
+                         <div class="meal-info-block">Оценка полезности: ${parsed.rate}</div>
+                       </div>`,
+                      `<button class="modal-button" id="ok-image-success">Ок</button>`
+                    );
+
+                    document.getElementById("ok-image-success").addEventListener("click", function(){
+                        closeModal();
+                        renderMealHistory(); // Предполагается, что renderMealHistory доступна глобально
+                    });
+
+                })
+                .catch(err => {
+                    showModal(`<p>Ошибка при запросе: ${err.message}</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
+                });
+            };
+
+            reader.readAsDataURL(file);
+        });
+    });
+});
+

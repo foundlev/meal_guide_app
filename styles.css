@@ -323,6 +323,19 @@ button {
   margin-top: 20px;
 }
 
+#modal-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+#confirm-image-button {
+    flex: 3;
+}
+
+#cancel-image-button {
+    flex: 1;
+}
+
 .modal-button {
   border:none;
   border-radius:5px;
