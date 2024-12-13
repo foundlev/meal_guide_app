@@ -1,562 +1,590 @@
 html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* Отключаем прокрутку */
-  touch-action: manipulation; /* Улучшает поведение касаний */
-  -ms-touch-action: manipulation; /* Для IE */
-  -webkit-user-select: none; /* Отключаем выделение текста */
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+ /* Отключаем прокрутку */
+	touch-action: manipulation;
+ /* Улучшает поведение касаний */
+	-ms-touch-action: manipulation;
+ /* Для IE */
+	-webkit-user-select: none;
+ /* Отключаем выделение текста */
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
-  body {
-    margin: 0;
-    background: #F8FBFF;
-    font-family: 'DM Sans', 'Sk-Modernist', sans-serif;
-    color: #3D3D3D;
-  }
+body {
+	margin: 0;
+	background: #F8FBFF;
+	font-family: 'DM Sans', 'Sk-Modernist', sans-serif;
+	color: #3D3D3D;
+}
 
-  body, .modal-content, .buttons-row, .add-form, .history, .recommendations-section {
-  -webkit-touch-callout: none; /* Отключаем всплывающее меню при долгом нажатии */
-  -webkit-user-select: none; /* Отключаем выделение текста */
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+body, .modal-content, .buttons-row, .add-form, .history, .recommendations-section {
+	-webkit-touch-callout: none;
+ /* Отключаем всплывающее меню при долгом нажатии */
+	-webkit-user-select: none;
+ /* Отключаем выделение текста */
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 /* Улучшение взаимодействия с кнопками на мобильных устройствах */
 button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
 
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    background: #F8FBFF;
-  }
+header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 15px;
+	background: #F8FBFF;
+}
 
-  header .location {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: 'Sk-Modernist', sans-serif;
-  }
+header .location {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-family: 'Sk-Modernist', sans-serif;
+}
 
-  header .location .title {
-    font-size: 14px;
-    text-decoration: underline;
-    color: #1C1C1C;
-    font-weight: 400;
-  }
+header .location .title {
+	font-size: 14px;
+	text-decoration: underline;
+	color: #1C1C1C;
+	font-weight: 400;
+}
 
-  header .location .subtitle {
-    font-size: 15px;
-    color: #FE554A;
-    margin-top: 2px;
-  }
+header .location .subtitle {
+	font-size: 15px;
+	color: #FE554A;
+	margin-top: 2px;
+}
 
-  header .left-icon,
+header .left-icon,
   header .right-icon {
-    width: 40px;
-    height: 40px;
-    background: #FFFFFF;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease;
-  }
+	width: 40px;
+	height: 40px;
+	background: #FFFFFF;
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	transition: box-shadow 0.3s ease;
+}
 
-  header .left-icon:hover,
+header .left-icon:hover,
   header .right-icon:hover {
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-  }
+	box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
 
-  .container {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Высота экрана */
-    overflow: hidden; /* Убираем лишнюю прокрутку */
-  }
+.container {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+ /* Высота экрана */
+	overflow: hidden;
+ /* Убираем лишнюю прокрутку */;
+}
 
-  h1 {
-    font-weight: 700;
-    font-size: 24px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    letter-spacing: -0.03em;
-  }
+h1 {
+	font-weight: 700;
+	font-size: 24px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	letter-spacing: -0.03em;
+}
 
-  .indicator-bar {
-    position: relative;
-    height: 15px;
-    background: linear-gradient(to right, #FE554A, #FEDD52, #3EC032);
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
+.indicator-bar {
+	position: relative;
+	height: 15px;
+	background: linear-gradient(to right, #FE554A, #FEDD52, #3EC032);
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
 
-  .indicator-pointer {
-    position: absolute;
-    top: -5px;
-    width: 5px;
-    border-radius: 3px;
-    height: 25px;
-    background: #000;
-    left: 50%; /* Пример положения */
-    transition: left 1s ease;
-  }
+.indicator-pointer {
+	position: absolute;
+	top: -5px;
+	width: 5px;
+	border-radius: 3px;
+	height: 25px;
+	background: #000;
+	left: 50%;
+ /* Пример положения */
+	transition: left 1s ease;
+}
 
-  .indicator-status {
-    font-size: 16px;
-    text-align: center;
-    font-weight: 700;
-    color: #3D3D3D;
-  }
+.indicator-status {
+	font-size: 16px;
+	text-align: center;
+	font-weight: 700;
+	color: #3D3D3D;
+}
 
   /* Форма для добавления приема пищи */
-  .add-form {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-  }
+.add-form {
+	margin-bottom: 15px;
+	display: flex;
+	flex-direction: column;
+}
 
-  .add-form textarea {
-    border: 1px solid #DDD;
-    border-radius: 10px;
-    padding: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 20px;
-    resize: none;
-    min-height: 60px;
-    margin-bottom: 10px;
-    outline: none;
-    height: 90px;
-  }
+.add-form textarea {
+	border: 1px solid #DDD;
+	border-radius: 10px;
+	padding: 10px;
+	font-family: 'DM Sans', sans-serif;
+	font-size: 20px;
+	resize: none;
+	min-height: 60px;
+	margin-bottom: 10px;
+	outline: none;
+	height: 90px;
+}
 
-  .add-form button:hover {
-    box-shadow: 0px 8px 15px rgba(202, 66, 17, 0.2);
-  }
+.add-form button:hover {
+	box-shadow: 0px 8px 15px rgba(202, 66, 17, 0.2);
+}
 
 .add-form .buttons-row {
-  display: flex;
-  gap: 10px;
+	display: flex;
+	gap: 10px;
 }
 
 .add-form button {
-    border: none;
-    border-radius: 10px;
-    padding: 15px;
-    color: #fff;
-    font-family: 'Sk-Modernist', sans-serif;
-    font-weight: 700;
-    font-size: 18px;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease;
+	border: none;
+	border-radius: 10px;
+	padding: 15px;
+	color: #fff;
+	font-family: 'Sk-Modernist', sans-serif;
+	font-weight: 700;
+	font-size: 18px;
+	cursor: pointer;
+	transition: box-shadow 0.3s ease;
 }
 
-
 .action-button {
-  background: linear-gradient(108.73deg, #F9881F 23.73%, #FF774C 79.34%);
-  flex: 1;
+	background: linear-gradient(108.73deg, #F9881F 23.73%, #FF774C 79.34%);
+	flex: 1;
 }
 
   /* История */
-  .history {
-    margin-bottom: 50px;
-    flex: 1; /* Занимает оставшееся место */
-    overflow-y: auto; /* Включаем вертикальную прокрутку */
-    padding: 10px; /* Отступы для содержимого */
-    border-radius: 10px; /* Скруглённые углы */
-  }
+.history {
+	margin-bottom: 50px;
+	flex: 1;
+ /* Занимает оставшееся место */
+	overflow-y: auto;
+ /* Включаем вертикальную прокрутку */
+	padding: 10px;
+ /* Отступы для содержимого */
+	border-radius: 10px;
+ /* Скруглённые углы */;
+}
 
-  .day-section {
-    margin-bottom: 20px;
-  }
+.day-section {
+	margin-bottom: 20px;
+}
 
-  .day-header {
-    font-weight: 700;
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
+.day-header {
+	font-weight: 700;
+	font-size: 20px;
+	margin-bottom: 10px;
+}
 
-  .meal-item {
-    background: #fff;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.meal-item {
+	background: #fff;
+	border-radius: 10px;
+	padding: 10px;
+	margin-bottom: 10px;
+	box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
 
-  .meal-info {
-    flex: 1;
-    margin-left: 5px;
-    overflow: hidden;
-  }
+.meal-info {
+	flex: 1;
+	margin-left: 5px;
+	overflow: hidden;
+}
 
-  .meal-info .meal-name {
-    font-size: 18px;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.meal-info .meal-name {
+	font-size: 18px;
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 
-  .meal-info .meal-details {
-    font-size: 15px;
-    color: #999;
-    margin-top: 5px;
-  }
+.meal-info .meal-details {
+	font-size: 15px;
+	color: #999;
+	margin-top: 5px;
+}
 
-  .meal-score {
-    font-size: 18px;
-    color: #3D3D3D;
-    font-weight: 700;
-    min-width: 40px;
-    text-align: right;
-    margin-right: 10px;
-  }
+.meal-score {
+	font-size: 18px;
+	color: #3D3D3D;
+	font-weight: 700;
+	min-width: 40px;
+	text-align: right;
+	margin-right: 10px;
+}
 
   /* Нижняя панель (например, навигация) */
-  .bottom-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #FFFFFF;
-    box-shadow: 0px -2px 20px rgba(0,0,0,0.05);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 0;
-  }
+.bottom-bar {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #FFFFFF;
+	box-shadow: 0px -2px 20px rgba(0,0,0,0.05);
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	padding: 10px 0;
+}
 
-  .bottom-bar a {
-    text-decoration: none;
-    color: #3D3D3D;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 12px;
-    transition: color 0.3s ease;
-  }
+.bottom-bar a {
+	text-decoration: none;
+	color: #3D3D3D;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: 12px;
+	transition: color 0.3s ease;
+}
 
-  .bottom-bar a .fas, .bottom-bar a .far, .bottom-bar a .fa {
-    font-size: 20px;
-    margin-bottom: 5px;
-  }
+.bottom-bar a .fas, .bottom-bar a .far, .bottom-bar a .fa {
+	font-size: 20px;
+	margin-bottom: 5px;
+}
 
-  .bottom-bar a:hover {
-    color: #FE554A;
-  }
+.bottom-bar a:hover {
+	color: #FE554A;
+}
 
 .recommendations-section h2, .add-form h2, .container h2 {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 10px;
+	font-size: 20px;
+	font-weight: 700;
+	margin-bottom: 10px;
 }
 
 .recommendations-box {
-  background: #fff;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
-  font-size: 18px;
-  overflow: scroll;
-  max-height: 150px;
-  min-height: 20px;
-  cursor: pointer;
+	background: #fff;
+	border-radius: 10px;
+	padding: 15px;
+	box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
+	font-size: 18px;
+	overflow: scroll;
+	max-height: 150px;
+	min-height: 20px;
+	cursor: pointer;
 }
 
 .recText {
-    font-size: 18px;
-    overflow-y: auto;
-    padding: 5px;
-    margin-bottom: 15px;
+	font-size: 18px;
+	overflow-y: auto;
+	padding: 5px;
+	margin-bottom: 15px;
 }
 
 bold {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 italic {
-    font-style: italic;
-    padding: 2px;
-    border-radius: 3px;
-    background-color: #e3e3e3;
-    color: #2C2C2C;
+	font-style: italic;
+	padding: 2px;
+	border-radius: 3px;
+	background-color: #e3e3e3;
+	color: #2C2C2C;
 }
 
   /* Адаптивность */
-  @media (min-width: 768px) {
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-  }
+@media (min-width: 768px) {
+	.container {
+		max-width: 600px;
+		margin: 0 auto;
+	}
+}
 
-  @media (min-width: 1024px) {
-    .container {
-      max-width: 700px;
-    }
-  }
+@media (min-width: 1024px) {
+	.container {
+		max-width: 700px;
+	}
+}
 
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right:0;
-  bottom:0;
-  background: rgba(0,0,0,0.5);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0,0,0,0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
 }
 
 .modal-content {
-  background: #fff;
-  border-radius:10px;
-  padding:20px;
-  max-width:400px;
-  width:90%;
-  box-shadow:0 2px 10px rgba(0,0,0,0.3);
-  max-height: 70vh;
-  display: flex;
-  flex-direction: column;
+	background: #fff;
+	border-radius: 10px;
+	padding: 20px;
+	max-width: 400px;
+	width: 90%;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+	max-height: 70vh;
+	display: flex;
+	flex-direction: column;
 }
 
 .exercises-list {
-  flex: 1;
-  overflow-y: auto; /* Теперь только exercises-list будет прокручиваться */
-  margin-top: 10px; /* если нужен отступ */
-  margin-bottom: 10px; /* если нужен отступ */
+	flex: 1;
+	overflow-y: auto;
+ /* Теперь только exercises-list будет прокручиваться */
+	margin-top: 10px;
+ /* если нужен отступ */
+	margin-bottom: 10px;
+ /* если нужен отступ */;
 }
 
 .modal-body {
-  font-size: 16px;
-  color:#333;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* предотвращаем прокрутку всей modal-body */
-  flex: 1; /* чтобы она занимала все доступное пространство между заголовками и кнопками */
+	font-size: 16px;
+	color: #333;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+ /* предотвращаем прокрутку всей modal-body */
+	flex: 1;
+ /* чтобы она занимала все доступное пространство между заголовками и кнопками */;
 }
 
 .modal-actions {
-  gap:10px;
-  flex-shrink: 0; /* Чтобы кнопки не сжимались и оставались на своем месте */
+	gap: 10px;
+	flex-shrink: 0;
+ /* Чтобы кнопки не сжимались и оставались на своем месте */;
 }
 
 #modal-actions {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 #confirm-image-button {
-    flex: 3;
+	flex: 1;
 }
 
 #cancel-image-button {
-    flex: 1;
+	flex: 1;
 }
 
 .modal-button {
-  border:none;
-  border-radius:5px;
-  padding:10px 15px;
-  font-size:16px;
-  cursor:pointer;
-  font-weight:bold;
-  background:linear-gradient(108.73deg, #F9881F 23.73%, #FF774C 79.34%);
-  color:#fff;
-  width: 100%;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 15px;
+	font-size: 16px;
+	cursor: pointer;
+	font-weight: bold;
+	background: linear-gradient(108.73deg, #F9881F 23.73%, #FF774C 79.34%);
+	color: #fff;
+	width: 100%;
 }
 
 .modal-button.cancel {
-  background:#999;
+	background: #999;
 }
 
 .modal-loading {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .modal-loading-spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid #ddd;
-  border-top: 3px solid #333;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+	width: 30px;
+	height: 30px;
+	border: 3px solid #ddd;
+	border-top: 3px solid #333;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  100% {transform:rotate(360deg);}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 /* Тёмная тема для модалки */
 @media (prefers-color-scheme: dark) {
-  .modal-content {
-    background: #2C2C2C;
-    color:#fff;
-  }
-  .modal-button.cancel {
-    background:#555;
-    color:#fff;
-  }
-  .modal-body {
-    color:#fff;
-  }
-  .modal-loading-spinner {
-    border-color:#777;
-    border-top-color:#fff;
-  }
+	.modal-content {
+		background: #2C2C2C;
+		color: #fff;
+	}
+
+	.modal-button.cancel {
+		background: #555;
+		color: #fff;
+	}
+
+	.modal-body {
+		color: #fff;
+	}
+
+	.modal-loading-spinner {
+		border-color: #777;
+		border-top-color: #fff;
+	}
 }
 
 
 /* Ночной режим */
 @media (prefers-color-scheme: dark) {
-  body {
-    background: #1E1E1E;
-    color: #FFFFFF;
-  }
+	body {
+		background: #1E1E1E;
+		color: #FFFFFF;
+	}
 
-  .container {
-    background: #1E1E1E;
-  }
+	.container {
+		background: #1E1E1E;
+	}
 
-  .history {
-    background: #2C2C2C;
-  }
+	.history {
+		background: #2C2C2C;
+	}
 
-  .day-header {
-    color: #FFFFFF;
-  }
+	.day-header {
+		color: #FFFFFF;
+	}
 
-  .meal-item {
-    background: #333333;
-    box-shadow: none;
-  }
+	.meal-item {
+		background: #333333;
+		box-shadow: none;
+	}
 
-  .meal-info .meal-details {
-    color: #BBB;
-  }
+	.meal-info .meal-details {
+		color: #BBB;
+	}
 
-  .meal-name {
-    color: #FFFFFF;
-  }
+	.meal-name {
+		color: #FFFFFF;
+	}
 
-  .meal-score {
-    color: #FFFFFF;
-  }
+	.meal-score {
+		color: #FFFFFF;
+	}
 
-  .recommendations-box {
-    background: #333333;
-    color: #FFFFFF;
-  }
+	.recommendations-box {
+		background: #333333;
+		color: #FFFFFF;
+	}
 
-  .add-form textarea {
-    background: #333333;
-    color: #FFFFFF;
-    border: 1px solid #444;
-  }
+	.add-form textarea {
+		background: #333333;
+		color: #FFFFFF;
+		border: 1px solid #444;
+	}
 
-  .action-button {
-    background: linear-gradient(108.73deg, #D9751A 23.73%, #C95E40 79.34%);
-  }
+	.action-button {
+		background: linear-gradient(108.73deg, #D9751A 23.73%, #C95E40 79.34%);
+	}
 
-  .indicator-bar {
-    background: linear-gradient(to right, #A02C29, #C8B53B, #2A9B2C);
-  }
+	.indicator-bar {
+		background: linear-gradient(to right, #A02C29, #C8B53B, #2A9B2C);
+	}
 
-  .indicator-pointer {
-    background: #EEE;
-  }
+	.indicator-pointer {
+		background: #EEE;
+	}
 
-  .indicator-status {
-    color: #FFFFFF;
-  }
+	.indicator-status {
+		color: #FFFFFF;
+	}
 }
 
 /* Добавим стилизацию для успешного добавления */
 .modal-success {
-  text-align: center;
-  font-family: 'DM Sans', sans-serif;
+	text-align: center;
+	font-family: 'DM Sans', sans-serif;
 }
+
 .modal-success h3 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: #3EC032;
+	font-size: 24px;
+	font-weight: 700;
+	margin-bottom: 15px;
+	color: #3EC032;
 }
+
 .modal-success .meal-info-block {
-  margin-bottom: 10px;
-  font-size: 16px;
+	margin-bottom: 10px;
+	font-size: 16px;
 }
+
 .modal-success .meal-info-block b {
-  font-weight: 700;
+	font-weight: 700;
 }
 
 /* Для окна с деталями о приеме */
 .modal-detail {
-  display: flex;
-  flex-direction: column;
-  flex: 1; /* чтобы modal-detail занял все оставшееся пространство внутри modal-body */
-  overflow: hidden; /* чтобы скролл был только в exercises-list */
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+ /* чтобы modal-detail занял все оставшееся пространство внутри modal-body */
+	overflow: hidden;
+ /* чтобы скролл был только в exercises-list */;
 }
 
 .modal-detail h3 {
-  font-size: 20px;
-  margin-bottom: 15px;
-  font-weight:700;
+	font-size: 20px;
+	margin-bottom: 15px;
+	font-weight: 700;
 }
 
 .modal-detail .detail-line {
-  margin-bottom: 10px;
-  font-size: 18px;
+	margin-bottom: 10px;
+	font-size: 18px;
 }
 
 .modal-detail input[type="datetime-local"] {
-  width: 100%;
-  padding: 8px 12px;
-  margin-top: 5px;
-  border: 1px solid #DDD;
-  border-radius: 5px;
-  font-size: 16px;
-  box-sizing: border-box;
-  background-color: #FFFFFF;
-  color: #3D3D3D;
+	width: 100%;
+	padding: 8px 12px;
+	margin-top: 5px;
+	border: 1px solid #DDD;
+	border-radius: 5px;
+	font-size: 16px;
+	box-sizing: border-box;
+	background-color: #FFFFFF;
+	color: #3D3D3D;
 }
 
 .modal-detail input[type="datetime-local"]::placeholder {
-  color: #999;
+	color: #999;
 }
 
 /* Добавьте эти стили внутри существующего медиазапроса для тёмной темы */
 
 @media (prefers-color-scheme: dark) {
-  .modal-detail input[type="datetime-local"] {
-    background-color: #444444;
-    color: #FFFFFF;
-    border: 1px solid #666666;
-  }
+	.modal-detail input[type="datetime-local"] {
+		background-color: #444444;
+		color: #FFFFFF;
+		border: 1px solid #666666;
+	}
 
-  .modal-detail input[type="datetime-local"]::placeholder {
-    color: #CCC;
-  }
+	.modal-detail input[type="datetime-local"]::placeholder {
+		color: #CCC;
+	}
 }
 
 /* styles.css */
@@ -565,97 +593,195 @@ italic {
 
 /* Стили для поля поиска */
 .search-input {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
-  border: 1px solid #DDD;
-  border-radius: 10px;
-  font-size: 16px;
-  outline: none;
-  box-sizing: border-box;
-  background-color: #FFFFFF;
-  color: #3D3D3D;
+	width: 100%;
+	margin-top: 10px;
+	padding: 10px;
+	border: 1px solid #DDD;
+	border-radius: 10px;
+	font-size: 16px;
+	outline: none;
+	box-sizing: border-box;
+	background-color: #FFFFFF;
+	color: #3D3D3D;
 }
 
 .search-input::placeholder {
-  color: #999;
+	color: #999;
 }
 
 /* Стилизация для поля поиска в тёмной теме */
 @media (prefers-color-scheme: dark) {
   /* ... ваши существующие стили для тёмной темы ... */
 
-  .search-input {
-    background-color: #444444;
-    color: #FFFFFF;
-    border: 1px solid #666666;
-  }
+	.search-input {
+		background-color: #444444;
+		color: #FFFFFF;
+		border: 1px solid #666666;
+	}
 
-  .search-input::placeholder {
-    color: #CCC;
-  }
+	.search-input::placeholder {
+		color: #CCC;
+	}
 }
 
 .modal-actions-top, .modal-actions-bottom {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 10px;
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+	margin-top: 10px;
 }
 
 .modal-actions-top {
-  flex-wrap: wrap; /* Позволяет кнопкам переноситься на новую строку при необходимости */
+	flex-wrap: wrap;
+ /* Позволяет кнопкам переноситься на новую строку при необходимости */;
 }
 
 /* Обеспечиваем, чтобы кнопки занимали равное пространство */
 .modal-actions-top .modal-button {
-  flex: 1;
+	flex: 1;
 }
 
 /* Refresh Button Styles */
 .refresh-button {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  z-index: 10000; /* Обеспечивает, что кнопка всегда поверх остальных элементов */
-  display: none; /* Изначально скрыта */
-  color: #3D3D3D; /* Цвет иконки в светлой теме */
-  transition: color 0.3s ease, transform 0.3s ease;
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	background: transparent;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	z-index: 10000;
+ /* Обеспечивает, что кнопка всегда поверх остальных элементов */
+	display: none;
+ /* Изначально скрыта */
+	color: #3D3D3D;
+ /* Цвет иконки в светлой теме */
+	transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .refresh-button.show {
-  display: block;
-  animation: fadeIn 0.3s ease-in-out;
+	display: block;
+	animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 /* Hover эффект для кнопки */
 .refresh-button:hover {
-  color: #FE554A; /* Цвет иконки при наведении в светлой теме */
-  transform: scale(1.1);
+	color: #FE554A;
+ /* Цвет иконки при наведении в светлой теме */
+	transform: scale(1.1);
 }
 
 /* Иконка Font Awesome */
 .refresh-button i {
-  pointer-events: none; /* Иконка не будет реагировать на события мыши */
+	pointer-events: none;
+ /* Иконка не будет реагировать на события мыши */;
 }
 
 /* Стилизация для тёмной темы */
 @media (prefers-color-scheme: dark) {
-  .refresh-button {
-    color: #FFFFFF; /* Цвет иконки в тёмной теме */
-  }
+	.refresh-button {
+		color: #FFFFFF;
+ /* Цвет иконки в тёмной теме */;
+	}
 
-  .refresh-button:hover {
-    color: #FE554A; /* Цвет иконки при наведении в тёмной теме */
-  }
+	.refresh-button:hover {
+		color: #FE554A;
+ /* Цвет иконки при наведении в тёмной теме */;
+	}
 }
 
+/* Добавление анимаций и микроанимаций */
+
+/* Плавное увеличение кнопок при наведении */
+.action-button {
+	transition: transform 0.3s ease;
+}
+
+.action-button:hover {
+	transform: scale(1.05);
+}
+
+/* Плавное появление рекомендаций */
+.recommendations-box {
+	animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Легкая анимация для элементов приема пищи при наведении */
+.meal-item {
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.meal-item:hover {
+	transform: translateY(-2px);
+	box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Микроанимация для индикатора (pointer) */
+.indicator-pointer {
+	animation: pulsePointer 3s infinite ease-in-out;
+}
+
+@keyframes pulsePointer {
+	0% {
+		box-shadow: 0 0 0 rgba(0,0,0,0);
+	}
+	50% {
+		box-shadow: 0 0 10px rgba(0,0,0,0.3);
+	}
+	100% {
+		box-shadow: 0 0 0 rgba(0,0,0,0);
+	}
+}
+
+/* Плавное появление модального оверлея */
+.modal-overlay {
+	animation: fadeModalOverlay 0.3s ease forwards;
+}
+
+@keyframes fadeModalOverlay {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Легкая анимация увеличения для модального окна при его появлении */
+.modal-content {
+	animation: scaleInModal 0.3s ease forwards;
+}
+
+@keyframes scaleInModal {
+	from {
+		transform: scale(0.95);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
