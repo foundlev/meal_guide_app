@@ -343,16 +343,57 @@ document.addEventListener("DOMContentLoaded", function() {
 	let searchInput = null; // Ссылка на поле ввода поиска
 	let searchVisible = false; // Отслеживаем, показано ли поле поиска
 	let searchQuery = ""; // Текущая строка поиска
+
 	addButton.addEventListener("click", function() {
-		const mealName = textarea.value.trim();
+		let mealName = textarea.value.trim();
 		if(!mealName) {
 			alert("Введите название еды!");
 			return;
 		}
-		showModal(`<p>Вы уверены, что хотите добавить: <b>${mealName}</b>?</p>`, `<button class="modal-button" id="confirm-button">Добавить</button>
+		showModal(`<p>Добавить к <b>${mealName}</b> информацию о ккал, белках, жирах, углеводах?</p>
+        <div class="modal-input-grid">
+          <div class="input-group">
+            <label for="manual-kcal">Ккал</label>
+            <input type="number" id="manual-kcal" placeholder="Ккал"/>
+          </div>
+          <div class="input-group">
+            <label for="manual-proteins">Белки (г)</label>
+            <input type="number" id="manual-proteins" placeholder="Белки (г)"/>
+          </div>
+          <div class="input-group">
+            <label for="manual-fats">Жиры (г)</label>
+            <input type="number" id="manual-fats" placeholder="Жиры (г)"/>
+          </div>
+          <div class="input-group">
+            <label for="manual-carbs">Углеводы (г)</label>
+            <input type="number" id="manual-carbs" placeholder="Углеводы (г)"/>
+          </div>
+        </div>
+        `, `<button class="modal-button" id="confirm-button">Добавить</button>
+
         <button class="modal-button cancel" id="cancel-button">Отмена</button>`);
 		document.getElementById("cancel-button").addEventListener("click", closeModal);
 		document.getElementById("confirm-button").addEventListener("click", function() {
+
+        const kcalVal = document.getElementById("manual-kcal").value.trim();
+        const pVal = document.getElementById("manual-proteins").value.trim();
+        const fVal = document.getElementById("manual-fats").value.trim();
+        const cVal = document.getElementById("manual-carbs").value.trim();
+
+        // Добавляем только непустые поля
+        if(pVal !== "") {
+            mealName += ` Белки: ${pVal} г`;
+        }
+        if(fVal !== "") {
+            mealName += ` Жиры: ${fVal} г`;
+        }
+        if(cVal !== "") {
+            mealName += ` Углеводы: ${cVal} г`;
+        }
+        if(kcalVal !== "") {
+            mealName += ` Ккал: ${kcalVal}`;
+        }
+
 			// Показываем загрузку
 			showModal(`<div class="modal-loading">
           <div class="modal-loading-spinner"></div>
@@ -453,6 +494,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	renderMealHistory();
 	renderRecommendations();
 });
+
 // script.js
 document.addEventListener("DOMContentLoaded", function() {
 	let touchStartY = 0;
@@ -795,9 +837,25 @@ document.addEventListener("DOMContentLoaded", function() {
 				if(parsed.status === false) {
 					showModal(`<p><b>Ошибка:</b> ${parsed.comment}</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
 				} else {
-					// short brief rate.number rate.text
+					console.log(parsed);
+
+					let fullBrief = "<h3>Общее описание</h3>"
+					fullBrief += parsed.general_comment;
+
+					fullBrief += "<h3>Активность</h3>"
+					fullBrief += parsed.sport;
+
+					fullBrief += "<h3>Положительное</h3>"
+					fullBrief += parsed.positives;
+
+					fullBrief += "<h3>Отрицательное</h3>"
+					fullBrief += parsed.negatives;
+
+					fullBrief += "<h3>Нужно изменить</h3>"
+					fullBrief += parsed.to_change;
+
 					localStorage.setItem("mealRecShort", parsed.short);
-					localStorage.setItem("mealRecBrief", parsed.brief);
+					localStorage.setItem("mealRecBrief", fullBrief);
 					localStorage.setItem("mealRecRateNumber", parsed.rate.number);
 					localStorage.setItem("mealRecRateText", parsed.rate.text);
 					showModal(`<div class="modal-success">

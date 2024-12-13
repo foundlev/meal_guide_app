@@ -10,7 +10,11 @@ Below are the data about my meals (including foods, drinks, supplements, vitamin
 
 {
   "short": "<str:short>",
-  "brief": "<str:brief>",
+  "general_comment": "<str:general_comment>",
+  "positives": "<str:positives>",
+  "negatives": "<str:negatives>",
+  "to_change": <str:to_change>,
+  "sport": <str:sport>,
   "rate": {
     "number": <int:rate>,
     "text": "<str:rate>"
@@ -18,9 +22,14 @@ Below are the data about my meals (including foods, drinks, supplements, vitamin
 }
 
 Where:
-- <str:brief>: A highly detailed free-text description of my current diet, recent changes, its pros and cons. Mention if there is a lack of certain microelements/vitamins and suggest foods that can improve this. You can use the <bold></bold> tag to bold text and <italic></italic> to italicize text and display it with a different color background. Do not forget to separate the text into paragraphs using the <p> tag to improve readability.
+- <str:general_comment>: A highly detailed free-text description of my current diet, including its overall quality, recent changes.
+- <str:positives>: A highly detailed free-text of the positive aspects of my diet.
+- <str:negatives>: A highly detailed free-text of the negative aspects or shortcomings of my diet, including missing nutrients or vitamins.
+- <str:sport>: A highly detailed free-text description of my current sport trainingsб the change of them and their frequency recently and its relationship to my diet.
+- <str:to_change>:  A highly detailed free-text general recommendations what to change in my diet. Mention any lack of certain microelements/vitamins and suggest foods that can supply them.
 - <str:short>: A very short recommendation (just 7-12 words) on what to improve in my diet.
 - <int:rate>: An integer from 0 to 100 rating my diet.
 - <str:rate>: A 3-4 word assessment of my diet. Try to use clearer language.
 
 The answer must be in Russian language only.
+Use the <bold></bold> tag to bold text and the <italic></italic> tag to italicize text. Separate the text into paragraphs using the <p> tag for better readability only in <str:general_comment>, <str:positives>, <str:negatives>, <str:to_change>.
