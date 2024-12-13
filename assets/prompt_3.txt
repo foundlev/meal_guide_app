@@ -19,7 +19,7 @@ Below are the data about my meals (including foods, drinks, supplements, vitamin
 
 Where:
 - <str:brief>: A highly detailed free-text description of my current diet, recent changes, its pros and cons. Mention if there is a lack of certain microelements/vitamins and suggest foods that can improve this. You can use the <bold></bold> tag to bold text and <italic></italic> to italicize text and display it with a different color background. Do not forget to separate the text into paragraphs using the <p> tag to improve readability.
-- <str:short>: A very short recommendation (just a few words) on what to improve in my diet.
+- <str:short>: A very short recommendation (just 7-12 words) on what to improve in my diet.
 - <int:rate>: An integer from 0 to 100 rating my diet.
 - <str:rate>: A 3-4 word assessment of my diet. Try to use clearer language.
 
