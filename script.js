@@ -349,8 +349,8 @@ document.addEventListener("DOMContentLoaded", function() {
 			alert("Введите название еды!");
 			return;
 		}
-		showModal(`<p>Вы уверены, что хотите добавить: <b>${mealName}</b>?</p>`, `<button class="modal-button" id="confirm-button">Добавить</button>
-       <button class="modal-button cancel" id="cancel-button">Отмена</button>`);
+		showModal(`<p>Вы уверены, что хотите добавить: <b>${mealName}</b>?</p>`, `<button class="modal-button cancel" id="cancel-button">Отмена</button>
+       <button class="modal-button" id="confirm-button">Добавить</button>`);
 		document.getElementById("cancel-button").addEventListener("click", closeModal);
 		document.getElementById("confirm-button").addEventListener("click", function() {
 			// Показываем загрузку
@@ -856,10 +856,10 @@ function generateReportForLast60Days() {
 				report += `[тр] ${record.name || "Занятие спортом"} | ${record.kcal || "-"} ккал | ${durationStr} | упражнения: ${exercisesList}\n`;
 			} else {
 				// Формируем строку для приема пищи
-                const proteins = record.structure?.proteins ?? "-";
-                const fats = record.structure?.fats ?? "-";
-                const carbs = record.structure?.carbohydrates ?? "-";
-                report += `[пп] ${record.name || "Прием пищи"} | ${record.kcal || "-"} ккал | б ${proteins} | ж ${fats} | у ${carbs}\n`;
+				const proteins = record.structure ? .proteins ? ? "-";
+				const fats = record.structure ? .fats ? ? "-";
+				const carbs = record.structure ? .carbohydrates ? ? "-";
+				report += `[пп] ${record.name || "Прием пищи"} | ${record.kcal || "-"} ккал | б ${proteins} | ж ${fats} | у ${carbs}\n`;
 			}
 		}
 	}
