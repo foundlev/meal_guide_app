@@ -1,11 +1,11 @@
-Below are the data about my meals (including foods, drinks, supplements, vitamins) and my workouts over a certain period of time, sorted by day. The data includes the types of meals, their calorie content, as well as the amount of protein, fat, and carbohydrates. For workouts, the burned calories are indicated. Calories and composition of foods were estimated by AI in some cases and may contain inaccuracies. My workout app (as I guess) can sometimes overestimate the number of calories burned. Based on this information, the AI should:
+Below are the data about my meals (including foods, drinks, supplements, vitamins) and my workouts over a certain period of time, sorted by day. The data includes the types of meals, their calorie content, as well as the amount of protein, fat, and carbohydrates. For workouts, the burned calories are indicated. Calories and composition of foods were estimated by AI in some cases and may contain inaccuracies. There is also a history of the short estimates (number, short text) of my diet that you sent earlier. Based on this information, the AI should:
 
 1. Analyze my current eating habits and routine.
 2. Evaluate the positive and negative aspects.
 3. Identify any missing nutrients (microelements, vitamins) and recommend foods that could supply them.
 4. Suggest ways to improve my diet.
-5. Provide a rating of my diet from 0 to 100, where 0 is very poor and 100 is ideal.
-6. Give a 2-3 word assessment of my dietary habits.
+5. Provide a rating of my diet from 0 to 100, where 0 is very poor and 100 is ideal. When evaluating, take into account the history of previous evaluations, if it is available.
+6. Give a 2-3 word assessment of my dietary habits. When evaluating, take into account the history of previous evaluations, if it is available.
 7. Format the result in the following JSON format:
 
 {

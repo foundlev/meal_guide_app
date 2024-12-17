@@ -858,6 +858,16 @@ document.addEventListener("DOMContentLoaded", function() {
 					localStorage.setItem("mealRecBrief", fullBrief);
 					localStorage.setItem("mealRecRateNumber", parsed.rate.number);
 					localStorage.setItem("mealRecRateText", parsed.rate.text);
+
+					let recRatesList = JSON.parse(localStorage.getItem('recRatesList')) || [];
+					recRatesList.push({
+					    rate: parsed.rate.number,
+					    text: parsed.rate.text,
+					    shortBrief: parsed.short,
+					    timestamp: Math.floor(Date.now() / 1000)
+					})
+					localStorage.setItem('recRatesList', JSON.stringify(recRatesList));
+
 					showModal(`<div class="modal-success">
                                 <h2>Рекомендации обновлены</h2>
                             </div>`, `<button class="modal-button" onclick="closeModal()">Ок</button>`);
@@ -921,5 +931,15 @@ function generateReportForLast60Days() {
 			}
 		}
 	}
+
+	// Пример: [{"rate":67,"text":"Средний, но улучшите","timestamp":1734477113}]
+	let recRatesList = JSON.parse(localStorage.getItem('recRatesList')) || [];
+	// Составляем текст в формате: дата (formatTimestampToDate): рейтинг (rate) - текст (text)
+	let formattedTextRates = recRatesList.map(item => {
+        return `${formatTimestampToDate(item.timestamp)} | Rate: ${item.rate} | Text: ${item.text} | Rec: ${item.shortBrief}`;
+    }).join("\n");
+
+    report += "\nИстория твоих оценок моего рациона (Оценка, краткий текст оценки, краткие рекомендации):\n" + formattedTextRates;
+
 	return report;
 }
