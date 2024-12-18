@@ -343,62 +343,152 @@ document.addEventListener("DOMContentLoaded", function() {
 	let searchInput = null; // Ссылка на поле ввода поиска
 	let searchVisible = false; // Отслеживаем, показано ли поле поиска
 	let searchQuery = ""; // Текущая строка поиска
-
 	addButton.addEventListener("click", function() {
 		let mealName = textarea.value.trim();
 		if(!mealName) {
 			alert("Введите название еды!");
 			return;
 		}
+
+		let quickMultiplierList = JSON.parse(localStorage.getItem("quickMultiplierList")) || [];
+
+        // Добавляем значения в начало, если их еще нет
+        const defaultValues = [0.3, 0.5, 1, 1.5, 2, 2.5];
+
+        // Объединяем уникальные значения, исключая дубликаты
+        quickMultiplierList = [...new Set([...defaultValues, ...quickMultiplierList])];
+
+        // Оставляем последние 5 значений.
+        quickMultiplierList = quickMultiplierList.slice(-5);
+
+        // Сортируем в порядке увеличения
+        quickMultiplierList.sort((a, b) => a - b);
+
+        // Отображаем модальное окно с выбором множителя
+
+		// <button class="quick-multiplier" data-value="0.5">0.5</button>
+		let quickMultiplierHTML = ''
+		quickMultiplierList.forEach(multiplier => {
+            quickMultiplierHTML += `<button class="quick-multiplier" data-value="${multiplier}">${multiplier}</button>`;
+        });
+
 		showModal(`<p>Добавить к <b>${mealName}</b> информацию о ккал, белках, жирах, углеводах?</p>
         <div class="modal-input-grid">
           <div class="input-group">
-            <label for="manual-kcal">Ккал</label>
-            <input type="number" id="manual-kcal" placeholder="Ккал"/>
+            <label for="manual-kcal" id="manual-kcal-label">Ккал</label>
+            <input type="number" id="manual-kcal" placeholder="Ккал" />
           </div>
           <div class="input-group">
-            <label for="manual-proteins">Белки (г)</label>
-            <input type="number" id="manual-proteins" placeholder="Белки (г)"/>
+            <label for="manual-proteins" id="manual-proteins-label">Белки (г)</label>
+            <input type="number" id="manual-proteins" placeholder="Белки (г)" />
           </div>
           <div class="input-group">
-            <label for="manual-fats">Жиры (г)</label>
-            <input type="number" id="manual-fats" placeholder="Жиры (г)"/>
+            <label for="manual-fats" id="manual-fats-label">Жиры (г)</label>
+            <input type="number" id="manual-fats" placeholder="Жиры (г)" />
           </div>
           <div class="input-group">
-            <label for="manual-carbs">Углеводы (г)</label>
-            <input type="number" id="manual-carbs" placeholder="Углеводы (г)"/>
+            <label for="manual-carbs" id="manual-carbs-label">Углеводы (г)</label>
+            <input type="number" id="manual-carbs" placeholder="Углеводы (г)" />
           </div>
         </div>
+
+        <div class="input-group multiplier-group">
+          <label for="multiplier">Множитель</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="number" id="multiplier" placeholder="1.0" value="1" step="0.1" />
+            <div class="multiplier-buttons">${quickMultiplierHTML}
+            </div>
+          </div>
+        </div>
+
         `, `<button class="modal-button" id="confirm-button">Добавить</button>
 
         <button class="modal-button cancel" id="cancel-button">Отмена</button>`);
+		const kcalInput = document.getElementById('manual-kcal');
+		const proteinsInput = document.getElementById('manual-proteins');
+		const fatsInput = document.getElementById('manual-fats');
+		const carbsInput = document.getElementById('manual-carbs');
+		const multiplierInput = document.getElementById('multiplier');
+		const quickMultiplierButtons = document.querySelectorAll('.quick-multiplier');
+
+		function updateValues() {
+			const multiplier = parseFloat(multiplierInput.value) || 1;
+			const kcal = parseFloat(kcalInput.value) || 0;
+			const proteins = parseFloat(proteinsInput.value) || 0;
+			const fats = parseFloat(fatsInput.value) || 0;
+			const carbs = parseFloat(carbsInput.value) || 0;
+			// Обновляем поля в модальном окне
+			const manualKcalLabel = document.getElementById('manual-kcal-label');
+			if(manualKcalLabel) {
+				manualKcalLabel.textContent = `Ккал: ${Math.floor(Math.abs(multiplier * kcal))}`
+			} else {
+				manualKcalLabel.textContent = `Ккал`
+			}
+			const manualProteinsLabel = document.getElementById('manual-proteins-label');
+			if(manualProteinsLabel) {
+				manualProteinsLabel.textContent = `Белки: ${Math.floor(Math.abs(multiplier * proteins))} г`
+			} else {
+				manualProteinsLabel.textContent = `Белки (г)`
+			}
+			const manualFatsLabel = document.getElementById('manual-fats-label');
+			if(manualFatsLabel) {
+				manualFatsLabel.textContent = `Жиры: ${Math.floor(Math.abs(multiplier * fats))} г`
+			} else {
+				manualFatsLabel.textContent = `Жиры (г)`
+			}
+			const manualCarbsLabel = document.getElementById('manual-carbs-label');
+			if(manualCarbsLabel) {
+				manualCarbsLabel.textContent = `Углеводы: ${Math.floor(Math.abs(multiplier * carbs))} г`
+			} else {
+				manualCarbsLabel.textContent = `Углеводы (г)`
+			}
+		}
+		// Слушатель на изменение ввода
+		[kcalInput, proteinsInput, fatsInput, carbsInput, multiplierInput].forEach(input => {
+			input.addEventListener('input', updateValues);
+		});
+		// Быстрые множители
+		quickMultiplierButtons.forEach(button => {
+			button.addEventListener('click', () => {
+				multiplierInput.value = button.dataset.value;
+				updateValues();
+			});
+		});
+		updateValues(); // Первоначальное обновление
 		document.getElementById("cancel-button").addEventListener("click", closeModal);
 		document.getElementById("confirm-button").addEventListener("click", function() {
 
-        const kcalVal = document.getElementById("manual-kcal").value.trim();
-        const pVal = document.getElementById("manual-proteins").value.trim();
-        const fVal = document.getElementById("manual-fats").value.trim();
-        const cVal = document.getElementById("manual-carbs").value.trim();
+			const kcalVal = document.getElementById("manual-kcal").value.trim();
+			const pVal = document.getElementById("manual-proteins").value.trim();
+			const fVal = document.getElementById("manual-fats").value.trim();
+			const cVal = document.getElementById("manual-carbs").value.trim();
+			const multiplierValue = parseFloat(document.getElementById("multiplier").value) || 1;
 
-        // Добавляем только непустые поля
-        if(pVal !== "") {
-            mealName += ` Белки: ${pVal} г`;
-        }
-        if(fVal !== "") {
-            mealName += ` Жиры: ${fVal} г`;
-        }
-        if(cVal !== "") {
-            mealName += ` Углеводы: ${cVal} г`;
-        }
-        if(kcalVal !== "") {
-            mealName += ` Ккал: ${kcalVal}`;
-        }
+			// Добавляем только непустые поля
+			if(pVal !== "") {
+				mealName += ` Белки: ${Math.floor(Math.abs(pVal * multiplierValue))} г`;
+			}
+			if(fVal !== "") {
+				mealName += ` Жиры: ${Math.floor(Math.abs(fVal * multiplierValue))} г`;
+			}
+			if(cVal !== "") {
+				mealName += ` Углеводы: ${Math.floor(Math.abs(cVal * multiplierValue))} г`;
+			}
+			if(kcalVal !== "") {
+				mealName += ` Ккал: ${Math.floor(Math.abs(kcalVal * multiplierValue))}`;
+			}
+
+            let quickMultiplierList = JSON.parse(localStorage.getItem("quickMultiplierList")) || [];
+            // Оставляем последние 5 записей.
+            quickMultiplierList = quickMultiplierList.slice(-5);
+            quickMultiplierList.push(multiplierValue);
+            localStorage.setItem("quickMultiplierList", JSON.stringify(quickMultiplierList));
 
 			// Показываем загрузку
 			showModal(`<div class="modal-loading">
-          <div class="modal-loading-spinner"></div>
-          <div>Загрузка...</div>
-        </div>`, ``);
+              <div class="modal-loading-spinner"></div>
+              <div>Загрузка...</div>
+            </div>`, ``);
 			const requestData = {
 				"password": getPassword(),
 				"prompt": prompt_1,
@@ -494,7 +584,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	renderMealHistory();
 	renderRecommendations();
 });
-
 // script.js
 document.addEventListener("DOMContentLoaded", function() {
 	let touchStartY = 0;
@@ -838,36 +927,28 @@ document.addEventListener("DOMContentLoaded", function() {
 					showModal(`<p><b>Ошибка:</b> ${parsed.comment}</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
 				} else {
 					console.log(parsed);
-
 					let fullBrief = "<h3>Общее описание</h3>"
 					fullBrief += parsed.general_comment;
-
 					fullBrief += "<h3>Активность</h3>"
 					fullBrief += parsed.sport;
-
 					fullBrief += "<h3>Положительное</h3>"
 					fullBrief += parsed.positives;
-
 					fullBrief += "<h3>Отрицательное</h3>"
 					fullBrief += parsed.negatives;
-
 					fullBrief += "<h3>Нужно изменить</h3>"
 					fullBrief += parsed.to_change;
-
 					localStorage.setItem("mealRecShort", parsed.short);
 					localStorage.setItem("mealRecBrief", fullBrief);
 					localStorage.setItem("mealRecRateNumber", parsed.rate.number);
 					localStorage.setItem("mealRecRateText", parsed.rate.text);
-
 					let recRatesList = JSON.parse(localStorage.getItem('recRatesList')) || [];
 					recRatesList.push({
-					    rate: parsed.rate.number,
-					    text: parsed.rate.text,
-					    shortBrief: parsed.short,
-					    timestamp: Math.floor(Date.now() / 1000)
+						rate: parsed.rate.number,
+						text: parsed.rate.text,
+						shortBrief: parsed.short,
+						timestamp: Math.floor(Date.now() / 1000)
 					})
 					localStorage.setItem('recRatesList', JSON.stringify(recRatesList));
-
 					showModal(`<div class="modal-success">
                                 <h2>Рекомендации обновлены</h2>
                             </div>`, `<button class="modal-button" onclick="closeModal()">Ок</button>`);
@@ -924,22 +1005,19 @@ function generateReportForLast60Days() {
 				report += `[тр] ${record.name || "Занятие спортом"} | ${record.kcal || "-"} ккал | ${durationStr} | упражнения: ${exercisesList}\n`;
 			} else {
 				// Формируем строку для приема пищи
-                const proteins = record.structure?.proteins ?? "-";
-                const fats = record.structure?.fats ?? "-";
-                const carbs = record.structure?.carbohydrates ?? "-";
-                report += `[пп] ${record.name || "Прием пищи"} | ${record.kcal || "-"} ккал | б ${proteins} | ж ${fats} | у ${carbs}\n`;
+				const proteins = record.structure ?.proteins ?? "-";
+				const fats = record.structure ?.fats ?? "-";
+				const carbs = record.structure ?.carbohydrates ?? "-";
+				report += `[пп] ${record.name || "Прием пищи"} | ${record.kcal || "-"} ккал | б ${proteins} | ж ${fats} | у ${carbs}\n`;
 			}
 		}
 	}
-
 	// Пример: [{"rate":67,"text":"Средний, но улучшите","timestamp":1734477113}]
 	let recRatesList = JSON.parse(localStorage.getItem('recRatesList')) || [];
 	// Составляем текст в формате: дата (formatTimestampToDate): рейтинг (rate) - текст (text)
 	let formattedTextRates = recRatesList.map(item => {
-        return `${formatTimestampToDate(item.timestamp)} | Rate: ${item.rate} | Text: ${item.text} | Rec: ${item.shortBrief}`;
-    }).join("\n");
-
-    report += "\nИстория твоих оценок моего рациона (Оценка, краткий текст оценки, краткие рекомендации):\n" + formattedTextRates;
-
+		return `${formatTimestampToDate(item.timestamp)} | Rate: ${item.rate} | Text: ${item.text} | Rec: ${item.shortBrief}`;
+	}).join("\n");
+	report += "\nИстория твоих оценок моего рациона (Оценка, краткий текст оценки, краткие рекомендации):\n" + formattedTextRates;
 	return report;
 }

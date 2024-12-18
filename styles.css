@@ -817,23 +817,56 @@ italic {
     box-shadow: 0 0 5px rgba(254,85,74,0.3);
 }
 
+.multiplier-group {
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
 @media (prefers-color-scheme: dark) {
-  .modal-input-grid .input-group label {
+  .modal-input-grid .input-group label, .input-group label {
     color: #fff;
   }
 
-  .modal-input-grid .input-group input {
+  .modal-input-grid .input-group input, .multiplier-group input, div .multiplier-buttons button {
     border: 1px solid #444;
     background-color: #333;
     color: #fff;
   }
 
-  .modal-input-grid .input-group input::placeholder {
+  .modal-input-grid .input-group input::placeholder, .multiplier-group input::placeholder {
     color: #bbb;
   }
 
-  .modal-input-grid .input-group input:focus {
+  .modal-input-grid .input-group input:focus, .multiplier-group input:focus,  div .multiplier-buttons button:focus {
     border-color: #FE554A;
     box-shadow: 0 0 5px rgba(254, 85, 74, 0.5);
   }
+}
+
+.multiplier-buttons {
+  display: flex;
+  flex: 5;
+  gap: 5px;
+}
+
+.multiplier-buttons button {
+  flex: 1;
+  background-color: #f2f2f2; /* Светлый фон */
+  border: 1px solid #ddd; /* Граница */
+  border-radius: 5px; /* Скругление углов */
+  padding: 5px 10px; /* Отступы */
+  font-size: 14px; /* Размер шрифта */
+  color: #333; /* Цвет текста */
+  cursor: pointer; /* Указатель при наведении */
+  transition: background-color 0.3s, border-color 0.3s; /* Плавный переход */
+}
+
+.multiplier-buttons button:hover {
+  background-color: #ff774c; /* Оранжевый фон при наведении */
+  border-color: #ff774c; /* Оранжевая граница */
+  color: #fff; /* Белый текст */
+}
+
+#multiplier {
+    flex: 1;
 }
