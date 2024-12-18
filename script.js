@@ -681,13 +681,26 @@ document.addEventListener("DOMContentLoaded", function() {
 		const file = imageInput.files[0];
 		if(!file) return;
 		// Спрашиваем подтверждение перед отправкой, например
-		showModal(`<p>Отправить выбранное изображение для анализа?</p>`, `<button class="modal-button" id="confirm-image-button">Отправить</button>
-           <button class="modal-button cancel" id="cancel-image-button">Отмена</button>`);
+		showModal(`
+		<div class="modal-body" id="modal-body">
+            <p>Отправить выбранное изображение для анализа?</p>
+            <input type="text" id="meal-name-input" placeholder="Введите название блюда или продукта" />
+        </div>
+        <div class="modal-actions image-buttons">
+            <button class="modal-button" id="confirm-image-button">Отправить</button>
+            <button class="modal-button cancel" id="cancel-image-button">Отмена</button>
+        </div>
+        `);
 		document.getElementById("cancel-image-button").addEventListener("click", function() {
 			closeModal();
 			imageInput.value = ""; // Сброс выбора
 		});
 		document.getElementById("confirm-image-button").addEventListener("click", function() {
+            const mealName = document.getElementById("meal-name-input").value.trim();
+            if (!mealName) {
+                alert("Введите название блюда или продукта!");
+                return;
+            }
 			// Показываем экран загрузки
 			showModal(`<div class="modal-loading">
                 <div class="modal-loading-spinner"></div>
@@ -701,6 +714,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				const requestData = {
 					"password": password,
 					"prompt": prompt_2,
+					"text": mealName,
 					"image": base64Image
 				};
 				fetch(imageApiUrl, {
@@ -725,7 +739,6 @@ document.addEventListener("DOMContentLoaded", function() {
 						return;
 					}
 					// Если всё нормально
-					console.log(parsed);
 					// Создаём новую запись
 					const newRecord = {
 						name: parsed.name,
@@ -926,7 +939,6 @@ document.addEventListener("DOMContentLoaded", function() {
 				if(parsed.status === false) {
 					showModal(`<p><b>Ошибка:</b> ${parsed.comment}</p>`, `<button class="modal-button" onclick="location.reload()">Ок</button>`);
 				} else {
-					console.log(parsed);
 					let fullBrief = "<h3>Общее описание</h3>"
 					fullBrief += parsed.general_comment;
 					fullBrief += "<h3>Активность</h3>"

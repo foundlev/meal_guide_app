@@ -841,6 +841,12 @@ italic {
     border-color: #FE554A;
     box-shadow: 0 0 5px rgba(254, 85, 74, 0.5);
   }
+
+  .modal-body #meal-name-input {
+    background: #333333;
+    color: #FFFFFF;
+    border: 1px solid #444;
+  }
 }
 
 .multiplier-buttons {
@@ -870,3 +876,26 @@ italic {
 #multiplier {
     flex: 1;
 }
+
+#meal-name-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #DDD;
+    border-radius: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+#meal-name-input:focus {
+    border-color: #FE554A;
+    box-shadow: 0 0 5px rgba(254, 85, 74, 0.3);
+}
+
+.image-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
