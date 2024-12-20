@@ -696,11 +696,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			imageInput.value = ""; // Сброс выбора
 		});
 		document.getElementById("confirm-image-button").addEventListener("click", function() {
-            const mealName = document.getElementById("meal-name-input").value.trim();
-            if (!mealName) {
-                alert("Введите название блюда или продукта!");
-                return;
-            }
+            const mealName = document.getElementById("meal-name-input").value.trim() || '';
 			// Показываем экран загрузки
 			showModal(`<div class="modal-loading">
                 <div class="modal-loading-spinner"></div>
