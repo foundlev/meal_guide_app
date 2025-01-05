@@ -102,50 +102,122 @@ function renderMealHistory(filter = "") {
 		dayHeader.textContent = headerText;
 		daySection.appendChild(dayHeader);
 		grouped[dateStr].sort((a, b) => b.timestamp - a.timestamp);
-		grouped[dateStr].forEach(record => {
-			const mealItem = document.createElement("div");
-			mealItem.classList.add("meal-item");
-			mealItem.dataset.timestamp = record.timestamp; // Сохраняем timestamp для идентификации
-			const mealInfo = document.createElement("div");
-			mealInfo.classList.add("meal-info");
-			const timeStr = new Date(record.timestamp * 1000).toLocaleTimeString('ru-RU', {
-				hour: '2-digit',
-				minute: '2-digit'
-			});
-			let mealName = document.createElement("div");
-			mealName.classList.add("meal-name");
-			let mealDetails = document.createElement("div");
-			mealDetails.classList.add("meal-details");
-			const recordType = record.type || "meal";
-			if(recordType === "sport") {
-				mealName.textContent = record.name || "Занятие спортом";
-				const kcalValue = record.kcal ? `<i class="fa-solid fa-fire"></i> ${record.kcal} ккал` : `<i class="fa-solid fa-fire"></i> — ккал`;
-				mealDetails.innerHTML = `${kcalValue}`;
-				const mealScore = document.createElement("div");
-				mealScore.classList.add("meal-score");
-				mealScore.textContent = "";
-				mealInfo.appendChild(mealName);
-				mealInfo.appendChild(mealDetails);
-				mealItem.appendChild(mealInfo);
-				mealItem.appendChild(mealScore);
-			} else {
-				mealName.textContent = record.name || "Приём пищи";
-				const kcalValue = record.kcal ? `<i class="fa-solid fa-utensils"></i> ${record.kcal} ккал` : `<i class="fa-solid fa-utensils"></i> — ккал`;
-				let pfcStr = "";
-				if(record.structure && record.structure.proteins !== undefined && record.structure.fats !== undefined && record.structure.carbohydrates !== undefined) {
-					pfcStr = ` | p ${record.structure.proteins} г | f ${record.structure.fats} г | c ${record.structure.carbohydrates} г`;
-				}
-				mealDetails.innerHTML = `${kcalValue}${pfcStr}`;
-				const mealScore = document.createElement("div");
-				mealScore.classList.add("meal-score");
-				mealScore.textContent = record.rate !== null ? formatToOneDecimalPlace(record.rate) : "—";
-				mealInfo.appendChild(mealName);
-				mealInfo.appendChild(mealDetails);
-				mealItem.appendChild(mealInfo);
-				mealItem.appendChild(mealScore);
-			}
-			daySection.appendChild(mealItem);
-		});
+
+        // Готовим массив групп
+        const mealGroups = [];
+        let currentGroup = [];
+
+        grouped[dateStr].forEach(record => {
+            // Если это тренировка, выносим её отдельно и игнорируем общую группировку
+            if (record.type === 'sport') {
+                // Если в currentGroup что-то есть, сохраняем группу в mealGroups
+                if (currentGroup.length) {
+                    mealGroups.push(currentGroup);
+                    currentGroup = [];
+                }
+                // Для спортивной записи делаем отдельную "группу" длиной 1
+                mealGroups.push([record]);
+                return; // Пропускаем остальную логику группировки
+            }
+
+            // Обычная (meal) запись:
+            if (!currentGroup.length) {
+                currentGroup.push(record);
+            } else {
+                const prevTime = currentGroup[currentGroup.length - 1].timestamp;
+                const diffSec = Math.abs(prevTime - record.timestamp);
+                if (diffSec <= 600) {
+                    // та же группа
+                    currentGroup.push(record);
+                } else {
+                    // новая группа
+                    mealGroups.push(currentGroup);
+                    currentGroup = [record];
+                }
+            }
+        });
+
+        // Если в currentGroup что-то осталось, добавляем и её
+        if (currentGroup.length) {
+            mealGroups.push(currentGroup);
+        }
+
+        // mealGroups уже получен после сортировки и группировки
+        mealGroups.forEach(group => {
+            const groupContainer = document.createElement("div");
+
+            // Проверяем: если в группе больше 1 элемента и ни один из них не является тренировкой,
+            // то считаем это "сгруппированным приёмом пищи" и добавляем класс meal-group.
+            const hasSport = group.some(r => r.type === "sport");
+            if (!hasSport && group.length > 1) {
+                // Группа из 2+ приёмов пищи (не спорт) => стилизуем
+                groupContainer.classList.add("meal-group");
+            } else {
+                // Либо 1 элемент (meal), либо sport — даём другой класс или вообще не даём
+                groupContainer.classList.add("meal-single");
+            }
+
+            group.forEach(record => {
+                const mealItem = document.createElement("div");
+                mealItem.classList.add("meal-item");
+                mealItem.dataset.timestamp = record.timestamp;
+
+                const mealInfo = document.createElement("div");
+                mealInfo.classList.add("meal-info");
+                const timeStr = new Date(record.timestamp * 1000).toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                let mealName = document.createElement("div");
+                mealName.classList.add("meal-name");
+                let mealDetails = document.createElement("div");
+                mealDetails.classList.add("meal-details");
+
+                const recordType = record.type || "meal";
+                if (recordType === "sport") {
+                    mealName.textContent = record.name || "Занятие спортом";
+                    const kcalValue = record.kcal ?
+                        `<i class="fa-solid fa-fire"></i> ${record.kcal} ккал` :
+                        `<i class="fa-solid fa-fire"></i> — ккал`;
+                    mealDetails.innerHTML = `${kcalValue}`;
+                    const mealScore = document.createElement("div");
+                    mealScore.classList.add("meal-score");
+                    mealScore.textContent = "";
+                    mealInfo.appendChild(mealName);
+                    mealInfo.appendChild(mealDetails);
+                    mealItem.appendChild(mealInfo);
+                    mealItem.appendChild(mealScore);
+                } else {
+                    mealName.textContent = record.name || "Приём пищи";
+                    const kcalValue = record.kcal ?
+                        `<i class="fa-solid fa-utensils"></i> ${record.kcal} ккал` :
+                        `<i class="fa-solid fa-utensils"></i> — ккал`;
+                    let pfcStr = "";
+                    if (record.structure &&
+                        record.structure.proteins !== undefined &&
+                        record.structure.fats !== undefined &&
+                        record.structure.carbohydrates !== undefined) {
+                        pfcStr = ` | p ${record.structure.proteins} г | f ${record.structure.fats} г | c ${record.structure.carbohydrates} г`;
+                    }
+                    mealDetails.innerHTML = `${kcalValue}${pfcStr}`;
+                    const mealScore = document.createElement("div");
+                    mealScore.classList.add("meal-score");
+                    mealScore.textContent = record.rate !== null ? formatToOneDecimalPlace(record.rate) : "—";
+                    mealInfo.appendChild(mealName);
+                    mealInfo.appendChild(mealDetails);
+                    mealItem.appendChild(mealInfo);
+                    mealItem.appendChild(mealScore);
+                }
+
+                groupContainer.appendChild(mealItem);
+            });
+
+            // Добавляем контейнер группы в daySection
+            daySection.appendChild(groupContainer);
+        });
+
+
 		historyContainer.appendChild(daySection);
 	}
 	// Добавляем обработчик на клик по meal-item для детализации

@@ -899,3 +899,15 @@ italic {
     margin-top: 15px;
 }
 
+.meal-group {
+  /* Градиент, перекликающийся с вашей основной гаммой (#F9881F -> #FF774C) */
+  background: linear-gradient(
+    90deg,
+    rgba(249, 136, 31, 0.1) 0%,
+    rgba(255, 119, 76, 0.1) 100%
+  );
+  border-radius: 8px;
+  margin-bottom: 15px;
+  padding: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
