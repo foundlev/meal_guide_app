@@ -2,56 +2,65 @@
 <html lang="ru">
 
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<title>Мой рацион</title>
-	<link rel="icon" type="image/png" href="assets/logo.png">
-	<link rel="manifest" href="manifest.json">
-	<meta name="theme-color" content="#ffffff">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	<link rel="apple-touch-icon" href="assets/logo.png">
-	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-	<link rel="stylesheet" href="styles.css"> </head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Мой рацион</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
 
 <body>
-	<div class="container">
-		<h2>Состояние моего рациона</h2>
-		<div class="nutrition-indicator">
-			<div class="indicator-bar">
-				<div class="indicator-pointer" id="indicator-pointer" style="left: 0%;"></div>
-			</div>
-			<div class="indicator-status" id="indicator-status">...</div>
-		</div>
-		<!-- Новый блок с рекомендациями -->
-		<div class="recommendations-section">
-			<h2>Последние рекомендации</h2>
-			<div class="recommendations-box" id="recommendations-box">... </div>
-		</div>
-		<div class="add-form">
-			<h2>Новый прием пищи</h2>
-			<textarea placeholder="Введите название еды, БАДа или витаминов..."></textarea>
-			<div class="buttons-row">
-				<button class="action-button" id="add-meal-button"><i class="fas fa-plus"></i></button>
-				<button class="action-button" id="clip-button"><i class="fa fa-paperclip"></i></button>
-				<input type="file" id="imageInput" accept="image/*;capture=camera" style="display:none;">
-				<button class="action-button" id="search-button"><i class="fa fa-search"></i></button>
-				<button class="action-button" id="add-sport-button"><i class="fas fa-dumbbell"></i></button>
-				<button class="action-button" id="open-ai-help"><i class="fas fa-robot"></i></button>
-			</div>
-		</div>
-		<div class="history"></div>
-	</div>
-	<!-- Модальное окно -->
-	<div class="modal-overlay" id="modal-overlay" style="display: none;">
-		<div class="modal-content">
-			<div class="modal-body" id="modal-body"></div>
-			<div class="modal-actions" id="modal-actions"></div>
-		</div>
-	</div>
-	<script src="script.js"></script>
+    <div class="container">
+        <h2>Состояние моего рациона</h2>
+        <div class="nutrition-indicator">
+            <div class="indicator-bar">
+                <div class="indicator-pointer" id="indicator-pointer" style="left: 0%;"></div>
+            </div>
+            <div class="indicator-status" id="indicator-status">...</div>
+        </div>
+        <!-- Новый блок с рекомендациями -->
+        <div class="recommendations-section">
+            <h2>Последние рекомендации</h2>
+            <div class="recommendations-box" id="recommendations-box">... </div>
+        </div>
+        <div class="add-form">
+            <h2>Новый прием пищи</h2>
+            <textarea placeholder="Введите название еды, БАДа или витаминов..."></textarea>
+            <div class="buttons-row">
+                <button class="action-button" id="add-meal-button"><i class="fas fa-plus"></i></button>
+                <button class="action-button" id="clip-button"><i class="fa fa-paperclip"></i></button>
+                <input type="file" id="imageInput" accept="image/*;capture=camera" style="display:none;">
+                <button class="action-button" id="search-button"><i class="fa fa-search"></i></button>
+                <button class="action-button" id="add-sport-button"><i class="fas fa-dumbbell"></i></button>
+                <button class="action-button" id="open-ai-help"><i class="fas fa-robot"></i></button>
+            </div>
+        </div>
+        <div class="select-mode-panel">
+            <button class="select-mode-button" id="toggle-select-mode">
+                <i class="fa-solid fa-check-double"></i> Выбрать
+            </button>
+            <button class="select-mode-button" id="edit-time-for-selected" style="display: none;">
+                <i class="fa-solid fa-clock"></i> Изменить время
+            </button>
+        </div>
+        <div class="history"></div>
+    </div>
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-actions" id="modal-actions"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 
 </html>
